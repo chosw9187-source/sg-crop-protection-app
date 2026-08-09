@@ -13,6 +13,7 @@ const pestGuide = JSON.parse(read('pest_guide.json'));
 const pestPhotoMap = JSON.parse(read('pest_photo_map.json'));
 const commonsPestGuide = JSON.parse(read('commons_pest_guide.json'));
 const formulationGuide = JSON.parse(read('formulation_guide.json'));
+const appConfig = JSON.parse(read('app_config.json'));
 
 const FORMULATION_KEYS = formulationGuide.map(f => f.key).sort((a, b) => b.length - a.length);
 function normalizeFormulation(raw) {
@@ -122,6 +123,9 @@ const dataObj = {
   photos: photos,
   logo: logoB64,
   formulationGuide: formulationGuide,
+  // config.json을 못 읽는 환경(파일 직접 열기, 아티팩트)용 기본값
+  defaultCode: appConfig.accessCode,
+  defaultIdleMin: appConfig.idleMin,
 };
 
 const css = read('styles.css');
@@ -205,6 +209,9 @@ fs.writeFileSync(path.join(docsDir, 'index.html'), html, 'utf-8');
 fs.writeFileSync(path.join(docsDir, '.nojekyll'), '', 'utf-8');
 // 테스트 공개 단계에서는 검색엔진 색인을 막는다 (비공개 전환 시 함께 정리)
 fs.writeFileSync(path.join(docsDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf-8');
+// 전 직원 공통 설정 — 앱이 시작할 때 이 파일을 읽어 인증코드를 확인한다
+fs.writeFileSync(path.join(docsDir, 'config.json'),
+  JSON.stringify({ accessCode: appConfig.accessCode, idleMin: appConfig.idleMin }, null, 2), 'utf-8');
 
 // Named copy for 다우오피스 그룹웨어 자료실 배포
 const DEPLOY_NAME = 'SG_영업사원 작물보호제 학습 도우미.html';

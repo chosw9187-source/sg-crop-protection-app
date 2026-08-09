@@ -243,6 +243,15 @@ body{
 .admin-hint{font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.6;}
 .admin-error{color:#c0392b;font-size:12.5px;font-weight:600;margin-top:8px;min-height:16px;}
 .admin-sub{font-size:11.5px;color:var(--text-muted);line-height:1.55;margin-top:6px;}
+.admin-code{
+  font-size:16px;letter-spacing:.06em;color:var(--sg-green-dark);
+  background:var(--sg-green-light);padding:2px 9px;border-radius:7px;margin-left:4px;
+}
+.admin-tag{
+  font-size:10px;font-weight:700;color:var(--text-muted);
+  background:var(--sg-gray-light);border:1px solid var(--border);
+  padding:2px 6px;border-radius:6px;margin-left:5px;
+}
 .admin-warn{
   font-size:11.5px;line-height:1.65;color:#7a5b00;background:#fff8e6;
   border:1px solid #f0d38a;border-radius:10px;padding:10px 12px;margin-top:14px;

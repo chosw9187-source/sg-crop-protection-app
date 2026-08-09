@@ -18,9 +18,9 @@
     chat: "sg_chat_v1",
     idleMin: "sg_idle_min_v1"
   };
-  var DEFAULT_CODE = "SG2026";
+  // 전 직원 공통 설정. config.json을 읽으면 그 값이, 못 읽으면 빌드에 박힌 값이 쓰인다.
+  var CONFIG = { accessCode: D.defaultCode || "SG2026", idleMin: (D.defaultIdleMin != null ? D.defaultIdleMin : 1) };
   var DEFAULT_ADMIN = "sgadmin!2026";
-  var DEFAULT_IDLE_MIN = 1;
   var IDLE_OPTIONS = [
     { v: 0,  label: "사용 안 함 (잠기지 않음)" },
     { v: 1,  label: "1분" },
@@ -36,11 +36,13 @@
   }
   function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
   function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
-  function getAccessCode(){ return lsGet(LS.code, DEFAULT_CODE); }
+  // 인증코드는 항상 공통 설정을 따른다 (기기별로 달라지지 않도록)
+  function getAccessCode(){ return CONFIG.accessCode; }
   function getAdminPw(){ return lsGet(LS.admin, DEFAULT_ADMIN); }
   function getIdleMin(){
-    var n = parseInt(lsGet(LS.idleMin, String(DEFAULT_IDLE_MIN)), 10);
-    return isNaN(n) || n < 0 ? DEFAULT_IDLE_MIN : n;
+    var raw = lsGet(LS.idleMin, null);           // 기기별 개인 설정이 있으면 우선
+    var n = raw === null ? CONFIG.idleMin : parseInt(raw, 10);
+    return isNaN(n) || n < 0 ? CONFIG.idleMin : n;
   }
 
   // ---------- 사용자(이름표) 관리 ----------
@@ -1297,20 +1299,19 @@
         '</div>';
     }
     var cur = getIdleMin();
-    return '<div class="admin-hint">현재 인증코드: <b>' + escapeHtml(getAccessCode()) + '</b></div>' +
-      '<label class="calc-label">새 인증코드 (변경 시에만 입력)</label>' +
-      '<input id="newCodeInput" class="calc-input" type="text" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
-      '<label class="calc-label">새 관리자 비밀번호 (변경 시에만 입력)</label>' +
-      '<input id="newAdminPwInput" class="calc-input" type="password" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
-      '<label class="calc-label">자동 잠금 시간</label>' +
+    return '<div class="admin-hint">현재 인증코드 <b class="admin-code">' + escapeHtml(getAccessCode()) + '</b></div>' +
+      '<div class="admin-sub">전 직원 공통 값입니다. 바꾸려면 <b>config.json</b>을 수정해 재배포해야 하며, 그 즉시 이전 코드로는 입장할 수 없습니다. (이 화면에서는 변경할 수 없습니다)</div>' +
+      '<label class="calc-label">자동 잠금 시간 <span class="admin-tag">이 기기에서만</span></label>' +
       '<select id="idleMinSelect" class="calc-select">' +
       IDLE_OPTIONS.map(function(o){
         return '<option value="' + o.v + '"' + (o.v === cur ? ' selected' : '') + '>' + o.label + '</option>';
       }).join('') +
       '</select>' +
       '<div class="admin-sub">설정한 시간 동안 화면을 만지지 않으면 인증코드 화면으로 돌아갑니다.</div>' +
+      '<label class="calc-label">새 관리자 비밀번호 <span class="admin-tag">이 기기에서만</span></label>' +
+      '<input id="newAdminPwInput" class="calc-input" type="password" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
       '<div class="admin-error" id="adminError"></div>' +
-      '<div class="admin-warn">⚠️ 이 앱은 정적 웹페이지라 인증코드가 페이지 소스에 남습니다. 외부 완전 차단용이 아니라 <b>사내 공유 관문</b>으로만 사용하세요. 또한 설정은 이 브라우저에만 저장되므로, 배포본의 기본 코드를 바꾸려면 재배포가 필요합니다.</div>' +
+      '<div class="admin-warn">⚠️ 이 앱은 정적 웹페이지라 인증코드가 페이지 소스에 남습니다. 외부 완전 차단용이 아니라 <b>사내 공유 관문</b>으로만 사용하세요.</div>' +
       '<div class="modal-actions">' +
       '<button class="modal-btn" data-action="close-admin">닫기</button>' +
       '<button class="modal-btn primary" data-action="admin-save">저장</button>' +
@@ -1440,17 +1441,10 @@
       }
     }
     else if(action === "admin-save"){
-      var codeEl = document.getElementById("newCodeInput");
       var newPwEl = document.getElementById("newAdminPwInput");
       var idleEl = document.getElementById("idleMinSelect");
-      var newCode = codeEl ? codeEl.value.trim() : "";
       var changed = [];
 
-      if(newCode){
-        lsSet(LS.code, newCode);
-        lsSet(LS.authed, newCode);      // 현재 세션은 로그아웃되지 않도록 갱신
-        changed.push("인증코드");
-      }
       if(newPwEl && newPwEl.value.trim()){
         lsSet(LS.admin, newPwEl.value.trim());
         changed.push("관리자 비밀번호");
@@ -1739,8 +1733,24 @@
 
   function initAuth(){
     if(lsGet(LS.authed, "") === getAccessCode()){ unlockApp(); return; }
-    var i = document.getElementById("authInput");
-    if(i) i.focus();
+    showCodeGate("");
+  }
+
+  // 공통 설정을 서버에서 읽는다. 실패하면(파일 직접 열기·아티팩트) 빌드에 박힌 값 사용.
+  function boot(){
+    var done = false;
+    function go(){ if(!done){ done = true; initAuth(); } }
+    setTimeout(go, 4000);                      // 네트워크가 느려도 앱은 뜨게
+    try {
+      fetch("config.json?cb=" + Date.now(), { cache: "no-store" })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(cfg){
+          if(cfg && cfg.accessCode) CONFIG.accessCode = String(cfg.accessCode);
+          if(cfg && cfg.idleMin != null) CONFIG.idleMin = parseInt(cfg.idleMin, 10);
+        })
+        .catch(function(){})
+        .then(go, go);
+    } catch(e){ go(); }
   }
 
   // 인증코드 제출 (게이트가 다시 그려져도 동작하도록 위임 처리)
@@ -1764,5 +1774,5 @@
     }
   });
 
-  initAuth();
+  boot();
 })();
