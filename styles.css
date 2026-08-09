@@ -127,6 +127,48 @@ body{
 }
 .sidebar-admin-btn:hover{background:var(--sg-gray-light);}
 
+.sidebar-user{
+  display:flex;align-items:center;gap:9px;padding:9px 10px;margin-bottom:8px;
+  background:var(--sg-green-light);border-radius:11px;
+}
+.sidebar-user-name{
+  flex:1;min-width:0;font-size:13.5px;font-weight:700;color:var(--sg-green-dark);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.sidebar-user-switch{
+  border:none;background:transparent;color:var(--sg-green-dark);font-family:inherit;
+  font-size:11.5px;font-weight:700;cursor:pointer;text-decoration:underline;flex-shrink:0;
+}
+.user-avatar{
+  width:26px;height:26px;flex-shrink:0;border-radius:50%;background:var(--sg-green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;
+}
+
+/* 사용자 선택 화면 */
+.user-list{display:flex;flex-direction:column;gap:8px;margin-top:20px;}
+.user-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;
+  border:1.5px solid var(--border);border-radius:12px;background:var(--card-bg);
+  color:var(--text);font-family:inherit;font-size:14.5px;font-weight:700;
+  cursor:pointer;text-align:left;
+}
+.user-item:hover{border-color:var(--sg-green);background:var(--sg-green-light);}
+.user-del{
+  margin-left:auto;font-size:11px;font-weight:600;color:var(--text-muted);
+  text-decoration:underline;flex-shrink:0;
+}
+.user-or{font-size:11.5px;color:var(--text-muted);margin:16px 0 4px;}
+#userForm{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+#userInput{
+  width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--border);
+  background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;text-align:center;
+}
+#userInput:focus{outline:none;border-color:var(--sg-green);}
+#userForm button{
+  padding:13px;border:none;border-radius:12px;background:var(--sg-green);color:#fff;
+  font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;
+}
+
 .sidebar-backdrop{display:none;}
 
 .main{flex:1;min-width:0;max-width:900px;padding-bottom:60px;}

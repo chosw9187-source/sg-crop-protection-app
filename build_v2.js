@@ -165,9 +165,7 @@ ${css}
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav"></nav>
-    <div class="sidebar-footer">
-      <button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>
-    </div>
+    <div class="sidebar-footer" id="sidebarFooter"></div>
   </aside>
   <div class="sidebar-backdrop" id="sidebarBackdrop" data-action="close-sidebar"></div>
   <div class="main">

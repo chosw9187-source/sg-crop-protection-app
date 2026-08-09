@@ -11,8 +11,11 @@
     code: "sg_access_code",
     admin: "sg_admin_pw",
     authed: "sg_authed_v1",
+    users: "sg_users_v1",
+    currentUser: "sg_current_user_v1",
     journal: "sg_journal_v1",
-    quizStat: "sg_quiz_stat_v1"
+    quizStat: "sg_quiz_stat_v1",
+    chat: "sg_chat_v1"
   };
   var DEFAULT_CODE = "SG2026";
   var DEFAULT_ADMIN = "sgadmin!2026";
@@ -22,13 +25,53 @@
     catch(e){ return fallback; }
   }
   function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
   function getAccessCode(){ return lsGet(LS.code, DEFAULT_CODE); }
   function getAdminPw(){ return lsGet(LS.admin, DEFAULT_ADMIN); }
 
-  function loadJournal(){
-    try { return JSON.parse(lsGet(LS.journal, "[]")) || []; } catch(e){ return []; }
+  // ---------- 사용자(이름표) 관리 ----------
+  // 서버가 없으므로 실제 로그인이 아니라 "이름 선택" 방식.
+  // 같은 기기 안에서 사람별로 기록을 분리하는 용도.
+  function getUsers(){
+    try { var a = JSON.parse(lsGet(LS.users, "[]")); return Array.isArray(a) ? a : []; }
+    catch(e){ return []; }
   }
-  function saveJournal(list){ lsSet(LS.journal, JSON.stringify(list)); }
+  function saveUsers(list){ lsSet(LS.users, JSON.stringify(list)); }
+  function getCurrentUser(){ return lsGet(LS.currentUser, ""); }
+  function setCurrentUser(name){ lsSet(LS.currentUser, name); }
+  function addUser(name){
+    var list = getUsers();
+    if(list.indexOf(name) === -1){ list.push(name); list.sort(function(a,b){ return a.localeCompare(b,"ko"); }); saveUsers(list); }
+  }
+  // 사용자별 저장소 키
+  function uKey(base){ return base + "__" + (getCurrentUser() || "_"); }
+
+  function loadJournal(){
+    try { return JSON.parse(lsGet(uKey(LS.journal), "[]")) || []; } catch(e){ return []; }
+  }
+  function saveJournal(list){ lsSet(uKey(LS.journal), JSON.stringify(list)); }
+
+  // 대화내용은 검색결과 객체를 그대로 저장하지 않고,
+  // 원 질문만 남겼다가 불러올 때 다시 계산해서 복원한다 (용량/순환참조 방지).
+  function saveChat(){
+    var slim = state.chatMessages.map(function(m){
+      if(m.role === "user") return { role:"user", text:m.text };
+      return { role:"bot", text:m.text, q:m.q || "", kind:m.kind || "" };
+    });
+    lsSet(uKey(LS.chat), JSON.stringify(slim));
+  }
+  function loadChat(){
+    var raw;
+    try { raw = JSON.parse(lsGet(uKey(LS.chat), "[]")); } catch(e){ return []; }
+    if(!Array.isArray(raw)) return [];
+    return raw.map(function(m){
+      if(m.role === "user") return m;
+      var out = { role:"bot", text:m.text, q:m.q, kind:m.kind };
+      if(m.kind === "crop") out.cropOverview = getCropOverview(m.q);
+      else if(m.kind === "search") out.results = chatSearch(m.q);
+      return out;
+    });
+  }
 
   function nowStamp(){
     var d = new Date();
@@ -150,7 +193,7 @@
   })();
 
   var state = { tab: "search", view: "list", selected: null, query: "", filter: "전체", formFilter: null, chatMessages: [], productsView: "info", formulationOpen: false, pageSize: 20, page: 1, calcProductId: null, calcProductSearch: "", calcCropName: null, calcVariantKey: null, calcWaterL: "", calcWaterUnit: "ℓ",
-    sidebarOpen: false, adminAuthed: false, journal: loadJournal(), quiz: null, quizAnswered: null, voiceOn: false };
+    sidebarOpen: false, adminAuthed: false, journal: [], quiz: null, quizAnswered: null, voiceOn: false, user: "" };
 
   function tokenizeQuery(q){
     return q.split(/[\s,、.!?？!()]+/).map(function(s){ return s.trim(); }).filter(Boolean);
@@ -981,6 +1024,7 @@
     html += '<div class="chat-tools">' +
       (voiceSupported() ? '<button class="chat-tool-btn" id="micBtn" data-action="voice-input" title="음성으로 질문">🎤 음성 질문</button>' : '<span class="chat-tool-note">이 브라우저는 음성 입력 미지원 (크롬/엣지 권장)</span>') +
       (ttsSupported() ? '<button class="chat-tool-btn' + (state.voiceOn?" on":"") + '" data-action="voice-toggle" title="답변 읽어주기">' + (state.voiceOn?"🔊 읽어주기 켜짐":"🔈 읽어주기 꺼짐") + '</button>' : '') +
+      (state.chatMessages.length ? '<button class="chat-tool-btn" data-action="chat-clear">🗑️ 대화 지우기</button>' : '') +
       '</div>';
     html += '<form class="chat-input-row" id="chatForm">' +
       '<input id="chatInput" type="text" enterkeyhint="send" placeholder="예: 오이 흰가루병" autocomplete="off"/>' +
@@ -998,11 +1042,12 @@
     if(cropOverview){
       var catList = CAT_ORDER.filter(function(c){ return cropOverview.byCat[c] && cropOverview.byCat[c].length; });
       var botText1 = '"' + text + '" 작물에 사용 가능한 제품을 분류별로 정리했어요 (총 ' + cropOverview.total + '개) 👇';
-      state.chatMessages.push({ role: "bot", text: botText1, cropOverview: cropOverview });
+      state.chatMessages.push({ role: "bot", text: botText1, cropOverview: cropOverview, q: text, kind: "crop" });
       var journalSummary = catList.map(function(c){
         return c + " " + cropOverview.byCat[c].length + "개(" + cropOverview.byCat[c].slice(0,3).map(function(x){ return x.product.productName; }).join(", ") + ")";
       }).join(" / ");
       addJournalEntry(text, "사용 가능 제품 " + cropOverview.total + "개 — " + journalSummary);
+      saveChat();
       speak(botText1);
       render();
       var scroller1 = document.getElementById("chatScroll");
@@ -1015,13 +1060,14 @@
     var botText = total > 0
       ? '"' + text + '" 관련해서 이런 정보를 찾았어요 👇'
       : '음... "' + text + '"에 대한 정보를 찾지 못했어요. 작물명이나 병해충·잡초 이름을 다르게 표현해서 다시 물어봐 주세요.';
-    state.chatMessages.push({ role: "bot", text: botText, results: results });
+    state.chatMessages.push({ role: "bot", text: botText, results: results, q: text, kind: "search" });
 
     var jParts = [];
     results.targets.forEach(function(t){ jParts.push("병해충 " + t.target + "(" + t.cropCount + "개 작물)"); });
     results.weeds.forEach(function(w){ jParts.push("잡초 " + w.name); });
     results.products.forEach(function(p){ jParts.push("제품 " + p.productName); });
     addJournalEntry(text, jParts.length ? jParts.join(" / ") : "검색 결과 없음");
+    saveChat();
 
     var spoken = botText;
     if(results.targets.length){
@@ -1181,14 +1227,14 @@
   }
 
   function getQuizStat(){
-    try { return JSON.parse(lsGet(LS.quizStat, '{"correct":0,"total":0}')); }
+    try { return JSON.parse(lsGet(uKey(LS.quizStat), '{"correct":0,"total":0}')); }
     catch(e){ return {correct:0, total:0}; }
   }
   function bumpQuizStat(isCorrect){
     var s = getQuizStat();
     s.total = (s.total||0) + 1;
     if(isCorrect) s.correct = (s.correct||0) + 1;
-    lsSet(LS.quizStat, JSON.stringify(s));
+    lsSet(uKey(LS.quizStat), JSON.stringify(s));
   }
 
   function renderQuizView(){
@@ -1276,6 +1322,15 @@
         '<span class="nav-desc">' + t.desc + '</span></span></button>';
     }).join('');
     document.getElementById("sidebarNav").innerHTML = navHtml;
+
+    var uName = state.user || "";
+    document.getElementById("sidebarFooter").innerHTML =
+      (uName
+        ? '<div class="sidebar-user"><span class="user-avatar">' + escapeHtml(uName.slice(0,1)) + '</span>' +
+          '<span class="sidebar-user-name">' + escapeHtml(uName) + '</span>' +
+          '<button class="sidebar-user-switch" data-action="switch-user">변경</button></div>'
+        : '') +
+      '<button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>';
 
     var cur = NAV_ITEMS.find(function(t){ return t.id === state.tab; });
     var ht = document.getElementById("headerTitle");
@@ -1371,6 +1426,11 @@
       if(newPwEl && newPwEl.value.trim()) lsSet(LS.admin, newPwEl.value.trim());
       closeAdmin();
       toast("✅ 인증코드가 변경되었습니다");
+    }
+    else if(action === "chat-clear"){
+      if(window.confirm("이 사용자의 대화내용을 지울까요? 업무일지는 그대로 남습니다.")){
+        state.chatMessages = []; saveChat(); render();
+      }
     }
     else if(action === "voice-input") startVoiceInput();
     else if(action === "voice-toggle"){
@@ -1482,11 +1542,97 @@
   });
 
   // ---------- AUTH GATE ----------
-  function unlockApp(){
+  // 선택된 사용자의 기록을 메모리로 불러온다
+  function loadUserSession(){
+    state.user = getCurrentUser();
+    state.journal = loadJournal();
+    state.chatMessages = loadChat();
+    state.quiz = null;
+    state.quizAnswered = null;
+  }
+
+  function renderUserGate(){
+    var users = getUsers();
+    var html = '<div class="auth-title">사용자 선택</div>' +
+      '<div class="auth-sub">기록(대화·업무일지·퀴즈)을 사용자별로 따로 저장합니다.</div>';
+    if(users.length){
+      html += '<div class="user-list">';
+      users.forEach(function(u){
+        html += '<button type="button" class="user-item" data-action="pick-user" data-val="' + escapeHtml(u) + '">' +
+          '<span class="user-avatar">' + escapeHtml(u.slice(0,1)) + '</span>' + escapeHtml(u) +
+          '<span class="user-del" data-action="del-user" data-val="' + escapeHtml(u) + '">삭제</span></button>';
+      });
+      html += '</div><div class="user-or">또는 새로 등록</div>';
+    }
+    html += '<form id="userForm" autocomplete="off">' +
+      '<input id="userInput" type="text" placeholder="이름 입력 (예: 홍길동)" autocomplete="off"/>' +
+      '<button type="submit">시작하기</button>' +
+      '</form>' +
+      '<div class="auth-error" id="userError"></div>' +
+      '<div class="auth-note">서버가 없어 기록은 <b>이 기기</b>에만 저장됩니다.<br/>다른 기기와 동기화되지 않으며, 이름 선택은 본인 확인 수단이 아닙니다.</div>';
+    return html;
+  }
+
+  function showUserGate(){
+    var gate = document.getElementById("authGate");
+    gate.classList.remove("hidden");
+    document.getElementById("appRoot").classList.add("hidden");
+    gate.querySelector(".auth-card").innerHTML =
+      '<img class="auth-logo" src="' + D.logo + '" alt="SG 한국삼공"/>' + renderUserGate();
+    var ui = document.getElementById("userInput");
+    if(ui) ui.focus();
+  }
+
+  function enterAppAs(name){
+    setCurrentUser(name);
+    addUser(name);
+    loadUserSession();
     document.getElementById("authGate").classList.add("hidden");
     document.getElementById("appRoot").classList.remove("hidden");
+    state.tab = "search"; state.view = "list"; state.selected = null;
     render();
   }
+
+  function unlockApp(){
+    var cur = getCurrentUser();
+    if(cur){ enterAppAs(cur); return; }
+    showUserGate();
+  }
+
+  // 사용자 선택 화면의 클릭/제출 처리
+  document.addEventListener("click", function(ev){
+    var el = ev.target.closest("[data-action]");
+    if(!el) return;
+    var action = el.dataset.action;
+    if(action === "pick-user"){ enterAppAs(el.dataset.val); }
+    else if(action === "del-user"){
+      ev.stopPropagation();
+      var name = el.dataset.val;
+      if(window.confirm('"' + name + '" 사용자와 그 기록을 모두 삭제할까요?')){
+        saveUsers(getUsers().filter(function(u){ return u !== name; }));
+        lsDel(LS.journal + "__" + name);
+        lsDel(LS.chat + "__" + name);
+        lsDel(LS.quizStat + "__" + name);
+        if(getCurrentUser() === name) setCurrentUser("");
+        showUserGate();
+      }
+    }
+    else if(action === "switch-user"){
+      setCurrentUser("");
+      showUserGate();
+    }
+  });
+
+  document.addEventListener("submit", function(ev){
+    if(ev.target && ev.target.id === "userForm"){
+      ev.preventDefault();
+      var v = (document.getElementById("userInput").value || "").trim();
+      var err = document.getElementById("userError");
+      if(!v){ if(err) err.textContent = "이름을 입력하세요."; return; }
+      if(v.length > 20){ if(err) err.textContent = "이름이 너무 깁니다 (20자 이내)."; return; }
+      enterAppAs(v);
+    }
+  });
 
   function initAuth(){
     var gate = document.getElementById("authGate");
