@@ -103,8 +103,8 @@ const logoB64 = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(dir, 'logo
 const iconB64 = 'data:image/png;base64,' + fs.readFileSync(path.join(dir, 'app_icon_b64.txt'), 'utf-8').trim();
 
 const manifest = {
-  name: '영업사원 작물보호제 학습 도우미 - SG 한국삼공',
-  short_name: 'SG 학습도우미',
+  name: 'SG 한선배 - 병해충 진단·학습앱',
+  short_name: 'SG 한선배',
   start_url: '.',
   display: 'standalone',
   background_color: '#f7f8f7',
@@ -130,7 +130,7 @@ const appJs = read('app.js');
 const html = `<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<title>영업사원 작물보호제 학습 도우미 | SG 한국삼공</title>
+<title>SG 한선배 | 병해충 진단·학습앱</title>
 <link rel="manifest" href="${manifestDataUri}">
 <link rel="apple-touch-icon" href="${iconB64}">
 <link rel="icon" href="${iconB64}">
@@ -138,14 +138,14 @@ const html = `<meta charset="UTF-8">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="SG 학습도우미">
+<meta name="apple-mobile-web-app-title" content="SG 한선배">
 <style>
 ${css}
 </style>
 <div class="auth-gate" id="authGate">
   <div class="auth-card">
     <img class="auth-logo" src="${logoB64}" alt="SG 한국삼공"/>
-    <div class="auth-mark">Hi, SG</div>
+    <div class="auth-mark">SG 한선배</div>
     <div class="auth-title">병해충 진단 · 학습앱</div>
     <div class="auth-sub">SG 한국삼공 임직원 전용 · 사내 교육자료</div>
     <form id="authForm" autocomplete="off">
@@ -161,7 +161,7 @@ ${css}
     <div class="sidebar-brand">
       <img class="logo" src="${logoB64}" alt="SG 한국삼공"/>
       <div class="sidebar-brand-text">
-        <div class="brand-mark">Hi, SG</div>
+        <div class="brand-mark">SG 한선배</div>
         <div class="brand-desc">병해충 진단 · 학습앱</div>
       </div>
     </div>
@@ -173,7 +173,7 @@ ${css}
     <div class="header">
       <button class="menu-btn" data-action="toggle-sidebar" aria-label="메뉴 열기">☰</button>
       <div class="header-text">
-        <div class="title" id="headerTitle">영업사원 작물보호제 학습 도우미</div>
+        <div class="title" id="headerTitle">SG 한선배</div>
         <div class="subtitle">SG 한국삼공 · 현장/교육용</div>
       </div>
     </div>
