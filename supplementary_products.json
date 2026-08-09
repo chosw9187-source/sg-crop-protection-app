@@ -1,0 +1,156 @@
+[
+  {
+    "productName": "자쿠사",
+    "formulation": "액제",
+    "category": "비선택성제초제",
+    "activeIngredient": "정보 준비중",
+    "ingredientClass": "정보 준비중",
+    "packaging": "정보 준비중",
+    "partial": true,
+    "sourceNote": "2026 밭잡초 도감에서 확인된 정보",
+    "features": [
+      "잡초는 빨리 죽고, 작물과 토양에는 안전한 비선택성제초제",
+      "강아지풀, 개갓냉이, 개구리자리 등 광범위 밭잡초에 방제 효과 확인"
+    ],
+    "targets": [
+      {"crop": "밭 전반(휴경지 포함)", "target": "강아지풀 등 화본과 잡초", "timing": "잡초 생육기", "method": "경엽처리", "dosage": "정보 준비중", "notes": "살포 후 3~7일 내 고사 (도감 실증사진 기준)"},
+      {"crop": "밭 전반(휴경지 포함)", "target": "개갓냉이 등 광엽 잡초", "timing": "잡초 생육기", "method": "경엽처리", "dosage": "정보 준비중", "notes": "살포 후 5~7일 내 고사 (도감 실증사진 기준)"}
+    ]
+  },
+  {
+    "productName": "황영웅",
+    "formulation": "액상수화제(카+16)",
+    "category": "살균살충제",
+    "activeIngredient": "설퍼 35.5% + 뷰프로페진 4%",
+    "ingredientClass": "무기유황계 + 티아디아진계",
+    "packaging": "1L×15통, 2L×8통",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (사용량/안전사용기준 미확인)",
+    "features": [
+      "월동기 병해충 방제 - 살균과 살충을 동시에",
+      "깍지벌레류 방제에 특히 강점"
+    ],
+    "targets": [
+      {"crop": "감(단감 포함)", "target": "식나무깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "감귤", "target": "더뎅이병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "배", "target": "가루깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "포도", "target": "가루깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "매실", "target": "뽕나무깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "뽕나무(오디)", "target": "뽕나무깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "딸기", "target": "담배가루이", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "복분자", "target": "장미흰깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "자두", "target": "주머니병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "마늘", "target": "잎마름병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "오이", "target": "흰가루병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "사과", "target": "사과면충", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "사과", "target": "흰가루병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "복숭아", "target": "뽕나무깍지벌레", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "복숭아", "target": "잎오갈병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "양파", "target": "노균병", "timing": "월동기", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""}
+    ]
+  },
+  {
+    "productName": "히어로",
+    "formulation": "유제(19+16)",
+    "category": "살충제",
+    "activeIngredient": "아미트라즈 12.5% + 뷰프로페진 12.5%",
+    "ingredientClass": "아미딘계 + 티아디아진계",
+    "packaging": "200㎖×40병, 500㎖×20병",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (정확한 병해충명/사용량은 준비중)",
+    "features": [
+      "깍지벌레류(거북밀깍지벌레, 이세리아깍지벌레 등) 방제"
+    ],
+    "targets": [
+      {"crop": "가지", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "감(단감 포함)", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "감귤", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "고추(단고추류 포함)", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "배", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""},
+      {"crop": "복숭아", "target": "깍지벌레류", "timing": "정보 준비중", "method": "경엽처리", "dosage": "정보 준비중", "notes": ""}
+    ]
+  },
+  {
+    "productName": "레빅사",
+    "formulation": "액상수화제(사1)",
+    "category": "살균제",
+    "activeIngredient": "메펜트리플루코나졸 10%",
+    "ingredientClass": "트리아졸계",
+    "packaging": "정보 준비중",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (정확한 병해충명/사용량은 준비중)",
+    "features": [],
+    "targets": [
+      {"crop": "감(단감 포함)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "감귤", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "고추", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "국화", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "딸기", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "배", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "복숭아", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "사과", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "수박", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "오이", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "인삼", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "자두", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""}
+    ]
+  },
+  {
+    "productName": "병모리",
+    "formulation": "수화제(다2+사1)",
+    "category": "살균제",
+    "activeIngredient": "보스칼리드 20% + 트리플루미졸 10%",
+    "ingredientClass": "피리딘카복사마이드계 + 트리아졸계",
+    "packaging": "정보 준비중",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (정확한 병해충명/사용량은 준비중)",
+    "features": [],
+    "targets": [
+      {"crop": "들깨(잎)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "딸기", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "부추", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "상추(양상추 포함)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "오이", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "인삼", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "장미", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "참외", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "토마토(방울토마토 포함)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""}
+    ]
+  },
+  {
+    "productName": "사천왕",
+    "formulation": "수화제(사1+사1)",
+    "category": "살균제",
+    "activeIngredient": "프로클로라즈망가니즈 25% + 테부코나졸 15%",
+    "ingredientClass": "이미다졸계 + 트리아졸계",
+    "packaging": "정보 준비중",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (정확한 병해충명/사용량은 준비중)",
+    "features": [],
+    "targets": [
+      {"crop": "감(단감 포함)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "고추(단고추류 포함)", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "더덕", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "딸기", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "마늘", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "배", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "사과", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "양파", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""},
+      {"crop": "포도", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""}
+    ]
+  },
+  {
+    "productName": "트레이온",
+    "formulation": "입상수화제(다4+4a)",
+    "category": "살균살충제",
+    "activeIngredient": "아미설브롬 4.2% + 디노테퓨란 10%",
+    "ingredientClass": "설폰아마이드계 + 클로로니코티닐계",
+    "packaging": "정보 준비중",
+    "partial": true,
+    "sourceNote": "제품혼용정보 자료에서 확인된 정보 (정확한 병해충명/사용량은 준비중)",
+    "features": [],
+    "targets": [
+      {"crop": "배추", "target": "정보 준비중", "timing": "", "method": "", "dosage": "", "notes": ""}
+    ]
+  }
+]

@@ -1,0 +1,325 @@
+[
+  {
+    "physicalPageCover": 38,
+    "physicalPageDetail": 39,
+    "bookPage": 38,
+    "name": "달맞이꽃",
+    "sciName": "Oenothera biennis",
+    "family": "바늘꽃과",
+    "photographer": "대구FM 이근호",
+    "shootingTime": "4월",
+    "description": "전국의 과수원, 휴경지 등에서 자라는 동계 일년생잡초이다. 줄기는 30~120㎝이고 굵고 곧은 뿌리에서 1개 또는 여러 개의 줄기가 나와 곧게 자라며, 전체에 짧은 털이 있다. 잎은 어긋나고 줄 모양의 바소꼴이며, 가장자리에 얕은 톱니가 있다. 6~9월에 노란색 꽃이 잎겨드랑이에서 하나씩 피며, 저녁에 피었다가 아침에 시드는 특징이 있다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.21",
+      "timeline": ["살포 2일차", "살포 5일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 40,
+    "physicalPageDetail": 41,
+    "bookPage": 40,
+    "name": "닭의장풀",
+    "sciName": "Commelina communis",
+    "family": "닭의장풀과",
+    "photographer": "천안FM 박주홍, 안동FM 이창하",
+    "shootingTime": "6월~7월",
+    "description": "전국의 과수원, 휴경지, 도로변 등에서 흔히 자라는 일년생잡초이다. 줄기는 15~50cm로 줄기 밑부분은 옆으로 비스듬히 뻗어 땅을 기며 마디마디 뿌리를 내리고 가지가 많이 갈라진다. 꽃은 7~8월에 피며, 두장의 둥글고 큰 하늘색 꽃잎과 하나의 바소 모양 흰색 꽃잎으로 이루어진다. 종자의 발아시기가 불균일하여 일반 토양처리제로 방제가 곤란한 잡초 중의 하나이다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.07.18",
+      "timeline": ["살포 3일차", "살포 5일차", "살포 10일차"]
+    }
+  },
+  {
+    "physicalPageCover": 42,
+    "physicalPageDetail": 43,
+    "bookPage": 42,
+    "name": "돌소리쟁이",
+    "sciName": "Rumex obtusifolius",
+    "family": "마디풀과",
+    "photographer": "천안FM 박주홍",
+    "shootingTime": "4월",
+    "description": "전국의 밭둑, 과수원, 초지, 휴경지 등에서 자라는 다년생잡초이다. 줄기는 60~120cm로 곧추 서고 위쪽에서 가지를 친다. 잎은 어긋나고 잎 가장자리는 주름이 지며 뒷면 엽맥 위에는 원기둥 모양의 돌기같은 털이 있다. 꽃은 6~10월에 담녹색으로 핀다. 뿌리 번식력이 매우 강하고, 식물체에서 점액질이 분비되어 가축이 먹기를 꺼려 초지에서 문제되는 외래잡초이다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.08",
+      "timeline": ["살포전", "살포 3일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": null,
+    "physicalPageDetail": 44,
+    "bookPage": 44,
+    "name": "돌콩",
+    "sciName": "Glycine soja",
+    "family": "콩과",
+    "photographer": "강원FM 송희근",
+    "shootingTime": "8월",
+    "description": "전국의 밭둑, 휴경지 등에서 자라는 덩굴성 일년생잡초이다. 줄기는 가늘고 길게 자라며 최대 2m에 달한다. 전 줄기에 밑을 향한 갈색 털이 빽빽하게 난다. 잎은 어긋나고 잎자루가 길며 깃꼴이며 7~8월에 연한 자주색 나비모양 꽃이 잎겨드랑이에서 4~5개씩 총상꽃차례로 핀다. 열매는 꼬투리 형태로 위를 향한 갈색 털이 밀생하며 9월에 성숙하고, 종자는 흑갈색의 작은 콩알 모양이다.",
+    "control": null,
+    "note": "single-page layout (no separate cover page, no 자쿠사 방제효과 control section present)"
+  },
+  {
+    "physicalPageCover": null,
+    "physicalPageDetail": 45,
+    "bookPage": 45,
+    "name": "드렁새",
+    "sciName": "Leptochloa chinensis",
+    "family": "화본과(벼과)",
+    "photographer": "광주FM 이한결",
+    "shootingTime": "4월",
+    "description": "전국의 논둑에서 많이 발생하며, 간혹 밭둑이나 휴경지 등에서 자라는 다년생 잡초이다. 줄기는 밑부분에서 갈라져 높이 30~70cm로 자라며 털이 없다. 잎은 분록색으로 길이 7~15cm, 폭 3~8㎜이며 가장자리에 잔돌기가 있다. 8~10월에 줄기 끝에 길이 15~30cm의 원뿔꽃차례가 달리며 소수는 연한 녹색에 적자색이 돌고 5~7개의 꽃이 들어 있다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.23",
+      "timeline": ["살포전", "살포 3일차", "살포 5일차"]
+    },
+    "note": "single-page layout (no separate cover page; photo, description and control section all on this one page)"
+  },
+  {
+    "physicalPageCover": null,
+    "physicalPageDetail": 46,
+    "bookPage": 46,
+    "name": "뚱딴지",
+    "sciName": "Helianthus tuberosus",
+    "family": "국화과",
+    "photographer": "대구FM 이근호",
+    "shootingTime": "6월",
+    "description": "전국의 밭주변이나 휴경지 등에서 자라는 다년생잡초이다. 처음에는 덩이줄기를 식용으로 재배했으나 현재는 야생에서 자라거나 사료작물로 이용한다. 일명 돼지감자라고도 한다. 줄기는 150~300cm이며 곧추 서고 상부에서 가지가 갈라진다. 전체에 짧은 강모가 있으며 지하경 끝에 괴경이 발달한다. 8~10월에 노란색 꽃이 가지와 줄기 끝에 핀다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.06.29",
+      "timeline": ["살포 3일차", "살포 5일차", "살포 7일차"]
+    },
+    "note": "single-page layout (no separate cover page)"
+  },
+  {
+    "physicalPageCover": null,
+    "physicalPageDetail": 47,
+    "bookPage": 47,
+    "name": "마디풀",
+    "sciName": "Polygonum aviculare",
+    "family": "마디풀과",
+    "photographer": "경기FM 최인호, 강원FM 송희근",
+    "shootingTime": "5월~8월",
+    "description": "전국의 밭, 밭주변, 과수원, 휴경지 등에서 자라는 일년생잡초이다. 줄기는 10~40cm이고 밑부분에서 갈라지고 비스듬히 서며 세로로 많은 줄이 있다. 잎은 어긋나기로 자라며, 긴 타원형으로 털이 없고 엽병 사이에 마디가 있고 마르면 녹색이다. 꽃은 5~10월에 붉은빛이 도는 백색으로 핀다.",
+    "control": null,
+    "note": "single-page layout (no separate cover page, no 자쿠사 방제효과 control section present)"
+  },
+  {
+    "physicalPageCover": 48,
+    "physicalPageDetail": 49,
+    "bookPage": 48,
+    "name": "띠",
+    "sciName": "Imperata cylindrica",
+    "family": "화본과(벼과)",
+    "photographer": "안동FM 이창하",
+    "shootingTime": "5월~7월",
+    "description": "전국의 밭둑, 과수원, 잔디밭, 묘지 등에서 자라는 다년생잡초이다. 줄기는 30~80cm이다. 단단한 비늘조각으로 덮인 뿌리줄기가 옆으로 길게 뻗으며, 줄기는 뿌리줄기의 마디에서 나와 곧게 서고 마디에 털이 있다. 잎은 주로 뿌리에서 나며 편평한 줄 모양으로 끝이 뾰족하고, 밑부분은 좁아져 줄기를 감싸는 잎집을 이룬다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.07.17",
+      "timeline": ["살포 3일차", "살포 5일차", "살포 7일차"]
+    },
+    "note": "page also promotes a second, dedicated product for 띠: \"'띠' 전문약제, 강력한 억초력을 가진 신개념 제초제 「억초제」 액상수화제\" alongside the standard 자쿠사 box"
+  },
+  {
+    "physicalPageCover": 50,
+    "physicalPageDetail": 51,
+    "bookPage": 50,
+    "name": "망초",
+    "sciName": "Conyza canadensis",
+    "family": "국화과",
+    "photographer": "광주FM 이한결, 제주FM 강병길",
+    "shootingTime": "6월~9월",
+    "description": "전국의 밭, 밭주변, 과수원, 휴경지 등에서 자라는 동계 일년생잡초이다. 줄기는 50~200cm이며 곧추 서고 전체에 굵은 털이 있다. 늦여름에서 초가을에 발아하여 어린 상태로 겨울을 난다. 꽃은 7~9월에 피며, 원줄기 끝에서 많은 가지가 갈라져 전체적으로 원추꽃차례를 이룬다. 농경지에서 큰 군락을 형성하며, 뿌리가 약 30cm 깊이까지 발달해 작물 생육에 피해를 준다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.06.26",
+      "timeline": ["살포 3일차 (처리구 VS 무처리구)", "살포 7일차 (처리구 VS 무처리구)"]
+    }
+  },
+  {
+    "physicalPageCover": 52,
+    "physicalPageDetail": 53,
+    "bookPage": 52,
+    "name": "메꽃",
+    "sciName": "Calystegia pubescens",
+    "family": "메꽃과",
+    "photographer": "대전FM 홍용민",
+    "shootingTime": "5월~6월",
+    "description": "전국의 밭주변, 과수원, 휴경지 등에서 자라는 덩굴성 다년생잡초이다. 발생 첫해에는 주로 영양생장을 하며 꽃은 피지 않는다. 줄기는 한 해에 최대 10m까지 길게 뻗으며, 생육 후기에 양분을 지하경에 저장한 채 월동한다. 3~10월 사이에 왕성하게 생장하고, 6~8월에 개화하며 가는 백색의 지하경이 옆으로 길게 뻗어 번식 범위를 넓혀가며, 군락 형성이 빠른 강성 덩굴잡초이다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.05.28",
+      "timeline": ["살포전", "살포 5일차"]
+    }
+  },
+  {
+    "physicalPageCover": 54,
+    "physicalPageDetail": 55,
+    "bookPage": 54,
+    "name": "며느리밑씻개",
+    "sciName": "Persicaria senticosa",
+    "family": "마디풀과",
+    "photographer": "경남FM 정우식",
+    "shootingTime": "7월~8월",
+    "description": "전국의 밭주변, 과수원, 휴경지 등에서 자라는 덩굴성 일년생잡초이다. 줄기는 네모지고 붉은빛을 띠며 가지가 많이 갈라진다. 갈고리 모양의 가시가 있어 다른 식물에 쉽게 달라붙는다. 잎은 어긋나며 삼각형이고 가장자리는 밋밋하며 턱잎이 있다. 7~8월에 가지 끝에 양성화가 모여 피고, 꽃받침은 5개로 갈라져 연한 홍색을 띤다. 며느리배꼽과 비슷하지만, 털이 더 길고 조밀하여 전체가 거칠게 느껴진다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.07.30",
+      "timeline": ["살포 1일차", "살포 5일차"]
+    }
+  },
+  {
+    "physicalPageCover": 56,
+    "physicalPageDetail": 57,
+    "bookPage": 56,
+    "name": "며느리배꼽",
+    "sciName": "Persicaria perfoliata",
+    "family": "마디풀과",
+    "photographer": "광주FM 이한결, 대구FM 이근호",
+    "shootingTime": "6월~7월",
+    "description": "전국의 밭주변, 과수원, 휴경지 등에서 자라는 덩굴성 일년생잡초이다. 잎은 삼각형 또는 달걀형으로, 가장자리가 물결 모양이며 표면은 녹색, 뒷면은 흰빛이 돈다. 잎맥 위에는 거슬러 난 갈고리 모양의 가시가 있어 다른 식물에 쉽게 달라붙는다. 꽃은 옅은 녹백색으로 7~9월에 피며, 줄기를 따라 작게 모여 달리고 강한 덩굴성과 부착력을 지녀 농경지나 초지에서 문제되는 잡초이다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.06.30",
+      "timeline": ["살포전", "살포 3일차", "살포 5일차"]
+    }
+  },
+  {
+    "physicalPageCover": 58,
+    "physicalPageDetail": 59,
+    "bookPage": 58,
+    "name": "명아주",
+    "sciName": "Chenopodium album",
+    "family": "명아주과",
+    "photographer": "경기FM 최인호, CRM팀 유혜진",
+    "shootingTime": "4월~6월",
+    "description": "전국의 밭, 밭주변, 과수원, 도로변, 휴경지 등에서 자라는 일년생잡초이다. 발아 최저온도는 약 6℃이다. 이른 봄 다른 잡초보다 먼저 출현하며, 초여름까지 지속적으로 발생하고 종자는 광발아성으로, 얕은 토양 표면에서 잘 발아하지만 깊이 묻히거나 습한 토양에서는 발아하지 않는다. 흰명아주는 명아주의 환경에 따른 생태형으로 모두 명아주로 부르는 것이 맞다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.09",
+      "timeline": ["살포전", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 60,
+    "physicalPageDetail": 61,
+    "bookPage": 60,
+    "name": "미국자리공",
+    "sciName": "Phytolacca americana",
+    "family": "자리공과",
+    "photographer": "경남FM 정우식, 한국삼공 연구소",
+    "shootingTime": "7월~9월",
+    "description": "북아메리카 원산인 외래잡초로 전국의 밭주변, 과수원, 휴경지 등에서 자라는 다년생잡초이다. 줄기는 자주빛을 띠는 붉은색으로 가지가 많이 갈라지고, 잎은 어긋나며 타원형 또는 달걀형으로 가장자리가 밋밋하다. 꽃은 6~9월에 붉은빛이 도는 흰색으로 피고 줄기 끝에 총상꽃차례로 달린다. 열매는 10개의 골이 있는 적자색 장과로, 새의 배설을 통해 전국적으로 확산된다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.07.09",
+      "timeline": ["살포 3일차", "살포 5일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 62,
+    "physicalPageDetail": 63,
+    "bookPage": 62,
+    "name": "바랭이",
+    "sciName": "Digitaria ciliaris",
+    "family": "화본과(벼과)",
+    "photographer": "순천FM 정훈, 한국삼공 연구소",
+    "shootingTime": "7월~8월",
+    "description": "전국의 밭, 밭주변, 과수원, 도로변, 휴경지 등에서 자라는 일년생잡초이다. 꽃은 7~8월에 피며, 꽃차례는 3~8개의 가지가 줄기 끝에 모여 달린다. 작은이삭은 대가 있는 것과 없는 것이 함께 달리며 연한 녹색 바탕에 자줏빛이 돌고 흰 털이 있다. 포영은 1개로 작은이삭보다 길며, 열매는 10월에 성숙한다. 생육과 번식력이 매우 강하다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.08.10",
+      "timeline": ["살포전", "살포 3일차", "살포 7일차"]
+    },
+    "note": "detail page also includes a '구분 Tip' comparison box distinguishing 바랭이 vs 왕바랭이 (왕바랭이는 비교적 거칠며 여러 줄기가 뭉쳐 억세게 자란다)"
+  },
+  {
+    "physicalPageCover": 64,
+    "physicalPageDetail": 65,
+    "bookPage": 64,
+    "name": "박주가리",
+    "sciName": "Metaplexis japonica",
+    "family": "박주가리과",
+    "photographer": "대구FM 이근호, 경남FM 정우식",
+    "shootingTime": "7월~8월",
+    "description": "전국의 과수원, 휴경지, 울타리 등에서 자라는 덩굴성 다년생잡초이다. 줄기는 3m 이상에 자라고 자르면 백색 유액이 나오며, 지하경이 길게 뻗어 번식한다. 잎은 마주나며 긴 심장형으로 가장자리가 밋밋하고 끝이 뾰족하다. 7~8월에 흰색 꽃이 잎겨드랑이에서 총상꽃차례로 피며, 꽃 표면에는 사마귀 모양의 돌기가 있다. 종자는 한쪽 끝에 명주실 같은 털이 달려 바람에 의해 퍼진다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": null,
+      "timeline": ["살포 3일차", "살포 5일차", "살포 7일차"]
+    },
+    "note": "spray date (살포일자) not shown/printed on this page unlike other entries"
+  },
+  {
+    "physicalPageCover": 66,
+    "physicalPageDetail": 67,
+    "bookPage": 66,
+    "name": "방동사니",
+    "sciName": "Cyperus amuricus",
+    "family": "사초과",
+    "photographer": "경기FM 최인호 (화서/생육기); 참방동사니 photo: 한국삼공 연구소 (9월); 금방동사니 photo: CRM팀 유혜진 (9월)",
+    "shootingTime": "7월~9월",
+    "description": "전국의 습한 밭이나 과수원 등에서 자라는 일년생잡초이다. 줄기는 세모지며 뿌리는 수염뿌리로 총생한다. 발아는 약 13℃ 전후에서 시작되며 20℃에서 가장 왕성하지만, 일정하지 않고 여름까지 천천히 이어진다. 그늘에서는 거의 발생하지 않으며 초장은 30~50cm로 작물보다 낮아 경합은 크지 않으나 특정 구역에 밀집해 자라는 경향이 강해, 땅콩 등 키가 낮은 작물에는 피해가 크다.",
+    "control": null,
+    "note": "title includes variant names '(참방동사니, 금방동사니)'; page shows additional labeled photos for 참방동사니 and 금방동사니 variants; no 자쿠사 방제효과 control section present"
+  },
+  {
+    "physicalPageCover": 68,
+    "physicalPageDetail": 69,
+    "bookPage": 68,
+    "name": "뱀딸기",
+    "sciName": "Duchesnea indica",
+    "family": "장미과",
+    "photographer": "전북FM 정진석",
+    "shootingTime": "5월",
+    "description": "전국의 밭주변, 과수원, 도로변, 휴경지 등에서 자라는 다년생잡초이다. 줄기가 옆으로 뻗으며 마디마다 뿌리를 내리고 긴 털이 있다. 잎은 어긋나며 세 장의 작은잎으로 된 겹잎이다. 작은잎은 달걀 모양으로 가장자리에 톱니가 있으며 뒷면에 긴 털이 난다. 4~5월에 노란색 꽃이 잎겨드랑이에서 긴 꽃줄기 끝에 한 개씩 피고, 열매는 붉게 익는 수과로 먹을 수 있다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.05.27",
+      "timeline": ["살포전", "살포 5일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 70,
+    "physicalPageDetail": 71,
+    "bookPage": 70,
+    "name": "별꽃",
+    "sciName": "Stellaria media",
+    "family": "석죽과",
+    "photographer": "강원FM 송희근",
+    "shootingTime": "3월~4월",
+    "description": "전국의 밭, 밭주변, 과수원, 도로변 등에서 자라는 동계 일년생잡초이다. 줄기는 밑부분에서 가지가 많이 갈라지며 눕는 경향이 있고, 잎은 마주나며 달걀 모양이다. 꽃받침잎과 꽃잎은 각각 5장으로, 꽃잎은 깊게 두 갈래로 갈라져 별 모양을 이룬다. 쇠별꽃과 비슷하지만 크기가 작고, 암술대가 3개인 점에서 암술대 5개의 쇠별꽃과 구별된다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.07",
+      "timeline": ["살포 3일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 72,
+    "physicalPageDetail": 73,
+    "bookPage": 72,
+    "name": "새포아풀",
+    "sciName": "Poa annua",
+    "family": "화본과(벼과)",
+    "photographer": "경기FM 최인호, 순천FM 정훈",
+    "shootingTime": "4월",
+    "description": "전국의 밭고랑, 과수원, 잔디밭 등에서 자라는 동계 일년생잡초이다. 여러 개의 줄기가 모여 나며 직립하거나 밑 부분 마디가 굽어 비스듬히 자란다. 늦가을에 발생해 겨울을 난 뒤 이듬해 봄에 왕성하게 자라며, 5월경 꽃이 피어 종자를 생산하므로 조기 방제가 중요하다. 꽃은 봄부터 가을까지 이어서 피고, 잎은 털이 없어 매끄럽다. 중앙 부분이 약간 주름지고, 잎끝이 둔한 형태를 보여 다른 풀과 구별된다.",
+    "control": {
+      "product": "자쿠사",
+      "sprayDate": "2025.04.02",
+      "timeline": ["살포 1일차", "살포 5일차", "살포 7일차"]
+    }
+  },
+  {
+    "physicalPageCover": 74,
+    "physicalPageDetail": null,
+    "bookPage": 74,
+    "name": "서양민들레",
+    "note": "only the cover page (74) falls within the requested range 38-74; its detail page (75, with 학명/과명/촬영자/설명/자쿠사 방제효과) is outside the requested range and was not read"
+  }
+]

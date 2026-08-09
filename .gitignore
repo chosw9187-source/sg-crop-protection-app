@@ -1,0 +1,11 @@
+node_modules/
+*.log
+
+# 빌드 중간 산출물 (원본 PDF 페이지 이미지 등)
+pdf_pages/
+v2_pages/
+*.tmp
+
+# 배포 사본 (docs/index.html 이 실제 배포본)
+artifact.html
+SG_영업사원 작물보호제 학습 도우미.html
