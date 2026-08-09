@@ -15,10 +15,20 @@
     currentUser: "sg_current_user_v1",
     journal: "sg_journal_v1",
     quizStat: "sg_quiz_stat_v1",
-    chat: "sg_chat_v1"
+    chat: "sg_chat_v1",
+    idleMin: "sg_idle_min_v1"
   };
   var DEFAULT_CODE = "SG2026";
   var DEFAULT_ADMIN = "sgadmin!2026";
+  var DEFAULT_IDLE_MIN = 1;
+  var IDLE_OPTIONS = [
+    { v: 0,  label: "사용 안 함 (잠기지 않음)" },
+    { v: 1,  label: "1분" },
+    { v: 3,  label: "3분" },
+    { v: 5,  label: "5분" },
+    { v: 10, label: "10분" },
+    { v: 30, label: "30분" }
+  ];
 
   function lsGet(k, fallback){
     try { var v = localStorage.getItem(k); return v === null ? fallback : v; }
@@ -28,6 +38,10 @@
   function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
   function getAccessCode(){ return lsGet(LS.code, DEFAULT_CODE); }
   function getAdminPw(){ return lsGet(LS.admin, DEFAULT_ADMIN); }
+  function getIdleMin(){
+    var n = parseInt(lsGet(LS.idleMin, String(DEFAULT_IDLE_MIN)), 10);
+    return isNaN(n) || n < 0 ? DEFAULT_IDLE_MIN : n;
+  }
 
   // ---------- 사용자(이름표) 관리 ----------
   // 서버가 없으므로 실제 로그인이 아니라 "이름 선택" 방식.
@@ -1282,11 +1296,19 @@
         '<button class="modal-btn primary" data-action="admin-login">확인</button>' +
         '</div>';
     }
+    var cur = getIdleMin();
     return '<div class="admin-hint">현재 인증코드: <b>' + escapeHtml(getAccessCode()) + '</b></div>' +
-      '<label class="calc-label">새 인증코드</label>' +
-      '<input id="newCodeInput" class="calc-input" type="text" placeholder="예: SG2026" autocomplete="off"/>' +
+      '<label class="calc-label">새 인증코드 (변경 시에만 입력)</label>' +
+      '<input id="newCodeInput" class="calc-input" type="text" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
       '<label class="calc-label">새 관리자 비밀번호 (변경 시에만 입력)</label>' +
       '<input id="newAdminPwInput" class="calc-input" type="password" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
+      '<label class="calc-label">자동 잠금 시간</label>' +
+      '<select id="idleMinSelect" class="calc-select">' +
+      IDLE_OPTIONS.map(function(o){
+        return '<option value="' + o.v + '"' + (o.v === cur ? ' selected' : '') + '>' + o.label + '</option>';
+      }).join('') +
+      '</select>' +
+      '<div class="admin-sub">설정한 시간 동안 화면을 만지지 않으면 인증코드 화면으로 돌아갑니다.</div>' +
       '<div class="admin-error" id="adminError"></div>' +
       '<div class="admin-warn">⚠️ 이 앱은 정적 웹페이지라 인증코드가 페이지 소스에 남습니다. 외부 완전 차단용이 아니라 <b>사내 공유 관문</b>으로만 사용하세요. 또한 설정은 이 브라우저에만 저장되므로, 배포본의 기본 코드를 바꾸려면 재배포가 필요합니다.</div>' +
       '<div class="modal-actions">' +
@@ -1420,13 +1442,30 @@
     else if(action === "admin-save"){
       var codeEl = document.getElementById("newCodeInput");
       var newPwEl = document.getElementById("newAdminPwInput");
-      var errEl2 = document.getElementById("adminError");
+      var idleEl = document.getElementById("idleMinSelect");
       var newCode = codeEl ? codeEl.value.trim() : "";
-      if(!newCode){ if(errEl2) errEl2.textContent = "새 인증코드를 입력하세요."; return; }
-      lsSet(LS.code, newCode);
-      if(newPwEl && newPwEl.value.trim()) lsSet(LS.admin, newPwEl.value.trim());
+      var changed = [];
+
+      if(newCode){
+        lsSet(LS.code, newCode);
+        lsSet(LS.authed, newCode);      // 현재 세션은 로그아웃되지 않도록 갱신
+        changed.push("인증코드");
+      }
+      if(newPwEl && newPwEl.value.trim()){
+        lsSet(LS.admin, newPwEl.value.trim());
+        changed.push("관리자 비밀번호");
+      }
+      if(idleEl){
+        var newIdle = parseInt(idleEl.value, 10);
+        if(newIdle !== getIdleMin()){
+          lsSet(LS.idleMin, String(newIdle));
+          changed.push("자동 잠금 " + (newIdle > 0 ? newIdle + "분" : "해제"));
+        }
+      }
+
       closeAdmin();
-      toast("✅ 인증코드가 변경되었습니다");
+      resetIdleTimer();               // 새 설정으로 타이머 재시작
+      toast(changed.length ? "✅ " + changed.join(" · ") + " 변경됨" : "변경된 내용이 없습니다");
     }
     else if(action === "chat-clear"){
       if(window.confirm("이 사용자의 대화내용을 지울까요? 업무일지는 그대로 남습니다.")){
@@ -1663,7 +1702,6 @@
   }
 
   // ---------- 자동 잠금 / 로그아웃 ----------
-  var IDLE_MS = 60 * 1000;
   var idleTimer = null;
 
   function appIsOpen(){
@@ -1676,7 +1714,11 @@
   function resetIdleTimer(){
     if(!appIsOpen()) return;
     stopIdleTimer();
-    idleTimer = setTimeout(function(){ lockApp("1분간 사용하지 않아 자동으로 잠겼습니다."); }, IDLE_MS);
+    var mins = getIdleMin();
+    if(mins <= 0) return;               // 관리자 설정에서 '사용 안 함'
+    idleTimer = setTimeout(function(){
+      lockApp(mins + "분간 사용하지 않아 자동으로 잠겼습니다.");
+    }, mins * 60 * 1000);
   }
 
   function lockApp(msg){
