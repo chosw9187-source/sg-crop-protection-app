@@ -1330,7 +1330,8 @@
           '<span class="sidebar-user-name">' + escapeHtml(uName) + '</span>' +
           '<button class="sidebar-user-switch" data-action="switch-user">변경</button></div>'
         : '') +
-      '<button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>';
+      '<button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>' +
+      '<button class="sidebar-logout-btn" data-action="logout">🔒 로그아웃</button>';
 
     var cur = NAV_ITEMS.find(function(t){ return t.id === state.tab; });
     var ht = document.getElementById("headerTitle");
@@ -1591,6 +1592,7 @@
     document.getElementById("appRoot").classList.remove("hidden");
     state.tab = "search"; state.view = "list"; state.selected = null;
     render();
+    resetIdleTimer();
   }
 
   function unlockApp(){
@@ -1619,8 +1621,10 @@
     }
     else if(action === "switch-user"){
       setCurrentUser("");
+      stopIdleTimer();
       showUserGate();
     }
+    else if(action === "logout"){ lockApp("로그아웃되었습니다."); }
   });
 
   document.addEventListener("submit", function(ev){
@@ -1634,31 +1638,89 @@
     }
   });
 
-  function initAuth(){
+  // ---------- 인증코드 화면 ----------
+  function renderCodeGate(lockedMsg){
+    return '<img class="auth-logo" src="' + D.logo + '" alt="SG 한국삼공"/>' +
+      '<div class="auth-mark">SG 한팀장</div>' +
+      '<div class="auth-title">병해충 진단 · 학습앱</div>' +
+      '<div class="auth-sub">SG 한국삼공 임직원 전용 · 사내 교육자료</div>' +
+      (lockedMsg ? '<div class="auth-locked">🔒 ' + escapeHtml(lockedMsg) + '</div>' : '') +
+      '<form id="authForm" autocomplete="off">' +
+      '<input id="authInput" type="password" inputmode="text" placeholder="인증코드를 입력하세요" autocomplete="off"/>' +
+      '<button type="submit" id="authSubmit">입장하기</button>' +
+      '</form>' +
+      '<div class="auth-error" id="authError"></div>' +
+      '<div class="auth-note">인증코드는 사내 그룹웨어 공지 또는 담당자를 통해 확인하세요.</div>';
+  }
+
+  function showCodeGate(lockedMsg){
     var gate = document.getElementById("authGate");
-    var form = document.getElementById("authForm");
+    gate.querySelector(".auth-card").innerHTML = renderCodeGate(lockedMsg);
+    gate.classList.remove("hidden");
+    document.getElementById("appRoot").classList.add("hidden");
+    var i = document.getElementById("authInput");
+    if(i) i.focus();
+  }
+
+  // ---------- 자동 잠금 / 로그아웃 ----------
+  var IDLE_MS = 60 * 1000;
+  var idleTimer = null;
+
+  function appIsOpen(){
+    var root = document.getElementById("appRoot");
+    return root && !root.classList.contains("hidden");
+  }
+
+  function stopIdleTimer(){ if(idleTimer){ clearTimeout(idleTimer); idleTimer = null; } }
+
+  function resetIdleTimer(){
+    if(!appIsOpen()) return;
+    stopIdleTimer();
+    idleTimer = setTimeout(function(){ lockApp("1분간 사용하지 않아 자동으로 잠겼습니다."); }, IDLE_MS);
+  }
+
+  function lockApp(msg){
+    stopIdleTimer();
+    try { if(recognizer) recognizer.stop(); } catch(e){}
+    if(ttsSupported()) window.speechSynthesis.cancel();
+    lsSet(LS.authed, "");           // 다시 들어오려면 인증코드 필요
+    state.sidebarOpen = false;
+    state.adminAuthed = false;
+    var am = document.getElementById("adminModal");
+    if(am) am.classList.add("hidden");
+    showCodeGate(msg || "로그아웃되었습니다.");
+  }
+
+  ["mousedown","keydown","touchstart","wheel","scroll"].forEach(function(evt){
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
+
+  function initAuth(){
+    if(lsGet(LS.authed, "") === getAccessCode()){ unlockApp(); return; }
+    var i = document.getElementById("authInput");
+    if(i) i.focus();
+  }
+
+  // 인증코드 제출 (게이트가 다시 그려져도 동작하도록 위임 처리)
+  document.addEventListener("submit", function(ev){
+    if(!ev.target || ev.target.id !== "authForm") return;
+    ev.preventDefault();
     var input = document.getElementById("authInput");
     var errEl = document.getElementById("authError");
-
-    if(lsGet(LS.authed, "") === getAccessCode()){ unlockApp(); return; }
-
-    form.addEventListener("submit", function(ev){
-      ev.preventDefault();
-      var v = (input.value||"").trim();
-      if(v === getAccessCode()){
-        lsSet(LS.authed, v);
-        unlockApp();
-      } else {
-        errEl.textContent = "인증코드가 올바르지 않습니다.";
-        input.value = "";
-        input.focus();
-        gate.querySelector(".auth-card").classList.remove("shake");
-        void gate.querySelector(".auth-card").offsetWidth;
-        gate.querySelector(".auth-card").classList.add("shake");
-      }
-    });
-    input.focus();
-  }
+    var card = document.querySelector("#authGate .auth-card");
+    var v = (input.value || "").trim();
+    if(v === getAccessCode()){
+      lsSet(LS.authed, v);
+      unlockApp();
+    } else {
+      if(errEl) errEl.textContent = "인증코드가 올바르지 않습니다.";
+      input.value = "";
+      input.focus();
+      card.classList.remove("shake");
+      void card.offsetWidth;
+      card.classList.add("shake");
+    }
+  });
 
   initAuth();
 })();

@@ -136,6 +136,17 @@ body{
   font-size:13.5px;font-weight:700;cursor:pointer;
 }
 .sidebar-admin-btn:hover{background:var(--sg-gray-light);}
+.sidebar-logout-btn{
+  width:100%;margin-top:7px;padding:12px;border:1.5px solid #e8bdb7;border-radius:12px;
+  background:transparent;color:#c0392b;font-family:inherit;
+  font-size:13.5px;font-weight:700;cursor:pointer;
+}
+.sidebar-logout-btn:hover{background:#fdecea;}
+.auth-locked{
+  margin-top:14px;padding:10px 12px;border-radius:10px;
+  background:#fff8e6;border:1px solid #f0d38a;
+  font-size:12.5px;font-weight:700;color:#7a5b00;line-height:1.5;
+}
 
 .sidebar-user{
   display:flex;align-items:center;gap:9px;padding:9px 10px;margin-bottom:8px;
