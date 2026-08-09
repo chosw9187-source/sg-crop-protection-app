@@ -145,7 +145,8 @@ ${css}
 <div class="auth-gate" id="authGate">
   <div class="auth-card">
     <img class="auth-logo" src="${logoB64}" alt="SG 한국삼공"/>
-    <div class="auth-title">영업사원 작물보호제 학습 도우미</div>
+    <div class="auth-mark">Hi, SG</div>
+    <div class="auth-title">병해충 진단 · 학습앱</div>
     <div class="auth-sub">SG 한국삼공 임직원 전용 · 사내 교육자료</div>
     <form id="authForm" autocomplete="off">
       <input id="authInput" type="password" inputmode="text" placeholder="인증코드를 입력하세요" autocomplete="off"/>
@@ -160,8 +161,8 @@ ${css}
     <div class="sidebar-brand">
       <img class="logo" src="${logoB64}" alt="SG 한국삼공"/>
       <div class="sidebar-brand-text">
-        <div class="title">작물보호제 학습 도우미</div>
-        <div class="subtitle">SG 한국삼공</div>
+        <div class="brand-mark">Hi, SG</div>
+        <div class="brand-desc">병해충 진단 · 학습앱</div>
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav"></nav>
