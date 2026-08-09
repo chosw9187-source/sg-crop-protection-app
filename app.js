@@ -992,7 +992,7 @@
     if(state.chatMessages.length === 0){
       html += '<div class="chat-welcome">' +
         '<div class="chat-welcome-icon">💬</div>' +
-        '<div class="chat-welcome-title">SG 한선배</div>' +
+        '<div class="chat-welcome-title">SG 한팀장</div>' +
         '<div class="chat-welcome-badge">🌱 SG 한국삼공 병해충 챗봇</div>' +
         '<div class="chat-welcome-sub">작물과 증상을 자유롭게 입력해보세요.<br/>예: "고추에 흰가루병 생겼는데 뭐 써야돼?"</div>' +
         '<div class="chiprow" style="justify-content:center;flex-wrap:wrap;">' +
@@ -1003,7 +1003,7 @@
         if(m.role === "user"){
           html += '<div class="bubble-row user"><div class="bubble user">' + escapeHtml(m.text) + '</div></div>';
         } else {
-          html += '<div class="bot-name-tag">한선배</div>' +
+          html += '<div class="bot-name-tag">한팀장</div>' +
             '<div class="bubble-row bot"><div class="bubble bot">' + escapeHtml(m.text) + '</div></div>';
           if(m.cropOverview){
             html += renderCropOverview(m.cropOverview);
@@ -1144,9 +1144,9 @@
   }
 
   function renderJournalView(){
-    var html = '<div class="banner">📝 <b>업무일지</b>는 한선배에게 물어본 내용이 자동으로 기록되는 공간이에요. 이동 중 음성으로 물어본 내용도 그대로 남으니, 복귀 후 메모만 덧붙여 정리하면 됩니다. <b>기록은 이 기기에만 저장</b>되며 외부로 전송되지 않습니다.</div>';
+    var html = '<div class="banner">📝 <b>업무일지</b>는 한팀장에게 물어본 내용이 자동으로 기록되는 공간이에요. 이동 중 음성으로 물어본 내용도 그대로 남으니, 복귀 후 메모만 덧붙여 정리하면 됩니다. <b>기록은 이 기기에만 저장</b>되며 외부로 전송되지 않습니다.</div>';
     if(!state.journal.length){
-      return html + '<div class="empty-state"><div class="big">📝</div>아직 기록이 없어요.<br/>한선배 탭에서 질문하면 자동으로 쌓입니다.</div>';
+      return html + '<div class="empty-state"><div class="big">📝</div>아직 기록이 없어요.<br/>한팀장 탭에서 질문하면 자동으로 쌓입니다.</div>';
     }
     html += '<div class="journal-toolbar">' +
       '<span class="journal-count">총 ' + state.journal.length + '건</span>' +
@@ -1306,7 +1306,7 @@
 
   var NAV_ITEMS = [
     {id:"search", icon:"🔍", label:"검색진단", desc:"병해충·잡초 찾기"},
-    {id:"chat", icon:"💬", label:"한선배", desc:"음성/대화 상담"},
+    {id:"chat", icon:"💬", label:"한팀장", desc:"음성/대화 상담"},
     {id:"journal", icon:"📝", label:"업무일지", desc:"질문 자동기록"},
     {id:"quiz", icon:"🎯", label:"역량퀴즈", desc:"학습 자가진단"},
     {id:"products", icon:"🧴", label:"제품정보", desc:"제품·혼용·희석"},
