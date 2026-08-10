@@ -9,7 +9,6 @@
   // ---------- STORAGE ----------
   var LS = {
     code: "sg_access_code",
-    admin: "sg_admin_pw",
     authed: "sg_authed_v1",
     users: "sg_users_v1",
     currentUser: "sg_current_user_v1",
@@ -18,8 +17,10 @@
     chat: "sg_chat_v1"
   };
   // 전 직원 공통 설정. config.json을 읽으면 그 값이, 못 읽으면 빌드에 박힌 값이 쓰인다.
-  var CONFIG = { accessCode: D.defaultCode || "SG2026" };
-  var DEFAULT_ADMIN = "sgadmin!2026";
+  var CONFIG = {
+    accessCode: D.defaultCode || "SG2026",
+    adminPw: D.defaultAdminPw || "3030agro"
+  };
 
   function lsGet(k, fallback){
     try { var v = localStorage.getItem(k); return v === null ? fallback : v; }
@@ -29,7 +30,7 @@
   function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
   // 인증코드는 항상 공통 설정을 따른다 (기기별로 달라지지 않도록)
   function getAccessCode(){ return CONFIG.accessCode; }
-  function getAdminPw(){ return lsGet(LS.admin, DEFAULT_ADMIN); }
+  function getAdminPw(){ return CONFIG.adminPw; }
 
   // ---------- 사용자(이름표) 관리 ----------
   // 서버가 없으므로 실제 로그인이 아니라 "이름 선택" 방식.
@@ -1285,14 +1286,11 @@
         '</div>';
     }
     return '<div class="admin-hint">현재 인증코드 <b class="admin-code">' + escapeHtml(getAccessCode()) + '</b></div>' +
-      '<div class="admin-sub">전 직원 공통 값입니다. 바꾸려면 <b>config.json</b>을 수정해 재배포해야 하며, 그 즉시 이전 코드로는 입장할 수 없습니다. (이 화면에서는 변경할 수 없습니다)</div>' +
-      '<label class="calc-label">새 관리자 비밀번호 <span class="admin-tag">이 기기에서만</span></label>' +
-      '<input id="newAdminPwInput" class="calc-input" type="password" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
-      '<div class="admin-error" id="adminError"></div>' +
+      '<div class="admin-sub">인증코드와 관리자 비밀번호는 <b>전 직원 공통</b>이라 이 화면에서는 바꿀 수 없습니다. 아래 명령으로 변경 후 재배포하면 그 즉시 이전 값으로는 입장할 수 없습니다.</div>' +
+      '<pre class="admin-cmd">node set_code.js 새코드\nnode set_code.js --admin 새비밀번호</pre>' +
       '<div class="admin-warn">⚠️ 이 앱은 정적 웹페이지라 인증코드가 페이지 소스에 남습니다. 외부 완전 차단용이 아니라 <b>사내 공유 관문</b>으로만 사용하세요.</div>' +
       '<div class="modal-actions">' +
-      '<button class="modal-btn" data-action="close-admin">닫기</button>' +
-      '<button class="modal-btn primary" data-action="admin-save">저장</button>' +
+      '<button class="modal-btn primary" data-action="close-admin">닫기</button>' +
       '</div>';
   }
 
@@ -1417,18 +1415,6 @@
         var errEl = document.getElementById("adminError");
         if(errEl) errEl.textContent = "비밀번호가 올바르지 않습니다.";
       }
-    }
-    else if(action === "admin-save"){
-      var newPwEl = document.getElementById("newAdminPwInput");
-      var changed = [];
-
-      if(newPwEl && newPwEl.value.trim()){
-        lsSet(LS.admin, newPwEl.value.trim());
-        changed.push("관리자 비밀번호");
-      }
-
-      closeAdmin();
-      toast(changed.length ? "✅ " + changed.join(" · ") + " 변경됨" : "변경된 내용이 없습니다");
     }
     else if(action === "chat-clear"){
       if(window.confirm("이 사용자의 대화내용을 지울까요? 업무일지는 그대로 남습니다.")){
@@ -1689,6 +1675,7 @@
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(cfg){
           if(cfg && cfg.accessCode) CONFIG.accessCode = String(cfg.accessCode);
+          if(cfg && cfg.adminPw) CONFIG.adminPw = String(cfg.adminPw);
         })
         .catch(function(){})
         .then(go, go);

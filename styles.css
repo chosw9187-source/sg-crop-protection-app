@@ -247,6 +247,13 @@ body{
   font-size:16px;letter-spacing:.06em;color:var(--sg-green-dark);
   background:var(--sg-green-light);padding:2px 9px;border-radius:7px;margin-left:4px;
 }
+.admin-cmd{
+  margin:10px 0 0;padding:11px 12px;border-radius:9px;
+  background:var(--sg-gray-light);border:1px solid var(--border);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;line-height:1.75;color:var(--text);
+  white-space:pre;overflow-x:auto;
+}
 .admin-tag{
   font-size:10px;font-weight:700;color:var(--text-muted);
   background:var(--sg-gray-light);border:1px solid var(--border);
