@@ -15,20 +15,11 @@
     currentUser: "sg_current_user_v1",
     journal: "sg_journal_v1",
     quizStat: "sg_quiz_stat_v1",
-    chat: "sg_chat_v1",
-    idleMin: "sg_idle_min_v1"
+    chat: "sg_chat_v1"
   };
   // 전 직원 공통 설정. config.json을 읽으면 그 값이, 못 읽으면 빌드에 박힌 값이 쓰인다.
-  var CONFIG = { accessCode: D.defaultCode || "SG2026", idleMin: (D.defaultIdleMin != null ? D.defaultIdleMin : 1) };
+  var CONFIG = { accessCode: D.defaultCode || "SG2026" };
   var DEFAULT_ADMIN = "sgadmin!2026";
-  var IDLE_OPTIONS = [
-    { v: 0,  label: "사용 안 함 (잠기지 않음)" },
-    { v: 1,  label: "1분" },
-    { v: 3,  label: "3분" },
-    { v: 5,  label: "5분" },
-    { v: 10, label: "10분" },
-    { v: 30, label: "30분" }
-  ];
 
   function lsGet(k, fallback){
     try { var v = localStorage.getItem(k); return v === null ? fallback : v; }
@@ -39,11 +30,6 @@
   // 인증코드는 항상 공통 설정을 따른다 (기기별로 달라지지 않도록)
   function getAccessCode(){ return CONFIG.accessCode; }
   function getAdminPw(){ return lsGet(LS.admin, DEFAULT_ADMIN); }
-  function getIdleMin(){
-    var raw = lsGet(LS.idleMin, null);           // 기기별 개인 설정이 있으면 우선
-    var n = raw === null ? CONFIG.idleMin : parseInt(raw, 10);
-    return isNaN(n) || n < 0 ? CONFIG.idleMin : n;
-  }
 
   // ---------- 사용자(이름표) 관리 ----------
   // 서버가 없으므로 실제 로그인이 아니라 "이름 선택" 방식.
@@ -1298,16 +1284,8 @@
         '<button class="modal-btn primary" data-action="admin-login">확인</button>' +
         '</div>';
     }
-    var cur = getIdleMin();
     return '<div class="admin-hint">현재 인증코드 <b class="admin-code">' + escapeHtml(getAccessCode()) + '</b></div>' +
       '<div class="admin-sub">전 직원 공통 값입니다. 바꾸려면 <b>config.json</b>을 수정해 재배포해야 하며, 그 즉시 이전 코드로는 입장할 수 없습니다. (이 화면에서는 변경할 수 없습니다)</div>' +
-      '<label class="calc-label">자동 잠금 시간 <span class="admin-tag">이 기기에서만</span></label>' +
-      '<select id="idleMinSelect" class="calc-select">' +
-      IDLE_OPTIONS.map(function(o){
-        return '<option value="' + o.v + '"' + (o.v === cur ? ' selected' : '') + '>' + o.label + '</option>';
-      }).join('') +
-      '</select>' +
-      '<div class="admin-sub">설정한 시간 동안 화면을 만지지 않으면 인증코드 화면으로 돌아갑니다.</div>' +
       '<label class="calc-label">새 관리자 비밀번호 <span class="admin-tag">이 기기에서만</span></label>' +
       '<input id="newAdminPwInput" class="calc-input" type="password" placeholder="비워두면 변경 안 함" autocomplete="off"/>' +
       '<div class="admin-error" id="adminError"></div>' +
@@ -1442,23 +1420,14 @@
     }
     else if(action === "admin-save"){
       var newPwEl = document.getElementById("newAdminPwInput");
-      var idleEl = document.getElementById("idleMinSelect");
       var changed = [];
 
       if(newPwEl && newPwEl.value.trim()){
         lsSet(LS.admin, newPwEl.value.trim());
         changed.push("관리자 비밀번호");
       }
-      if(idleEl){
-        var newIdle = parseInt(idleEl.value, 10);
-        if(newIdle !== getIdleMin()){
-          lsSet(LS.idleMin, String(newIdle));
-          changed.push("자동 잠금 " + (newIdle > 0 ? newIdle + "분" : "해제"));
-        }
-      }
 
       closeAdmin();
-      resetIdleTimer();               // 새 설정으로 타이머 재시작
       toast(changed.length ? "✅ " + changed.join(" · ") + " 변경됨" : "변경된 내용이 없습니다");
     }
     else if(action === "chat-clear"){
@@ -1625,7 +1594,6 @@
     document.getElementById("appRoot").classList.remove("hidden");
     state.tab = "search"; state.view = "list"; state.selected = null;
     render();
-    resetIdleTimer();
   }
 
   function unlockApp(){
@@ -1654,7 +1622,6 @@
     }
     else if(action === "switch-user"){
       setCurrentUser("");
-      stopIdleTimer();
       showUserGate();
     }
     else if(action === "logout"){ lockApp("로그아웃되었습니다."); }
@@ -1696,27 +1663,7 @@
   }
 
   // ---------- 자동 잠금 / 로그아웃 ----------
-  var idleTimer = null;
-
-  function appIsOpen(){
-    var root = document.getElementById("appRoot");
-    return root && !root.classList.contains("hidden");
-  }
-
-  function stopIdleTimer(){ if(idleTimer){ clearTimeout(idleTimer); idleTimer = null; } }
-
-  function resetIdleTimer(){
-    if(!appIsOpen()) return;
-    stopIdleTimer();
-    var mins = getIdleMin();
-    if(mins <= 0) return;               // 관리자 설정에서 '사용 안 함'
-    idleTimer = setTimeout(function(){
-      lockApp(mins + "분간 사용하지 않아 자동으로 잠겼습니다.");
-    }, mins * 60 * 1000);
-  }
-
   function lockApp(msg){
-    stopIdleTimer();
     try { if(recognizer) recognizer.stop(); } catch(e){}
     if(ttsSupported()) window.speechSynthesis.cancel();
     lsSet(LS.authed, "");           // 다시 들어오려면 인증코드 필요
@@ -1726,10 +1673,6 @@
     if(am) am.classList.add("hidden");
     showCodeGate(msg || "로그아웃되었습니다.");
   }
-
-  ["mousedown","keydown","touchstart","wheel","scroll"].forEach(function(evt){
-    document.addEventListener(evt, resetIdleTimer, { passive: true });
-  });
 
   function initAuth(){
     if(lsGet(LS.authed, "") === getAccessCode()){ unlockApp(); return; }
@@ -1746,7 +1689,6 @@
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(cfg){
           if(cfg && cfg.accessCode) CONFIG.accessCode = String(cfg.accessCode);
-          if(cfg && cfg.idleMin != null) CONFIG.idleMin = parseInt(cfg.idleMin, 10);
         })
         .catch(function(){})
         .then(go, go);

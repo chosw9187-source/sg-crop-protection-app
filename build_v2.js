@@ -125,7 +125,6 @@ const dataObj = {
   formulationGuide: formulationGuide,
   // config.json을 못 읽는 환경(파일 직접 열기, 아티팩트)용 기본값
   defaultCode: appConfig.accessCode,
-  defaultIdleMin: appConfig.idleMin,
 };
 
 const css = read('styles.css');
@@ -211,7 +210,7 @@ fs.writeFileSync(path.join(docsDir, '.nojekyll'), '', 'utf-8');
 fs.writeFileSync(path.join(docsDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf-8');
 // 전 직원 공통 설정 — 앱이 시작할 때 이 파일을 읽어 인증코드를 확인한다
 fs.writeFileSync(path.join(docsDir, 'config.json'),
-  JSON.stringify({ accessCode: appConfig.accessCode, idleMin: appConfig.idleMin }, null, 2), 'utf-8');
+  JSON.stringify({ accessCode: appConfig.accessCode }, null, 2), 'utf-8');
 
 // Named copy for 다우오피스 그룹웨어 자료실 배포
 const DEPLOY_NAME = 'SG_영업사원 작물보호제 학습 도우미.html';
