@@ -214,25 +214,39 @@ app.use((err, req, res, next) => {
 // ---------- 기동 ----------
 const PORT = process.env.PORT || 3000;
 
-async function seedFirstAdmin() {
-  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM users');
-  if (rows[0].n > 0) return;
-  const empNo = process.env.ADMIN_EMP_NO || 'admin';
+// 환경변수로 지정한 관리자 계정을 보장한다.
+// 이미 있으면 비밀번호를 그 값으로 맞춘다 → 관리자가 비밀번호를 잊어도 복구할 수 있다.
+// 설정이 끝나면 ADMIN_PASSWORD 를 지우는 것을 권장한다(배포마다 덮어쓰지 않도록).
+async function ensureAdmin() {
+  const empNo = (process.env.ADMIN_EMP_NO || '').trim();
   const pw = process.env.ADMIN_PASSWORD;
-  if (!pw) {
-    console.warn('[seed] 계정이 하나도 없습니다. ADMIN_EMP_NO / ADMIN_PASSWORD 환경변수를 설정하고 재배포하세요.');
+  if (!empNo || !pw) {
+    const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM users');
+    if (rows[0].n === 0) {
+      console.warn('[seed] 계정이 하나도 없습니다. ADMIN_EMP_NO / ADMIN_PASSWORD 를 설정하고 재배포하세요.');
+    }
     return;
   }
   const { hash, salt } = hashPassword(pw);
-  await pool.query(
-    `INSERT INTO users (emp_no, name, dept, pw_hash, pw_salt, role, must_change_pw)
-     VALUES ($1, '관리자', '경영지원팀', $2, $3, 'admin', TRUE)`,
-    [empNo, hash, salt]
-  );
-  console.log('[seed] 최초 관리자 계정 생성:', empNo);
+  const { rows } = await pool.query('SELECT id FROM users WHERE emp_no = $1', [empNo]);
+  if (rows[0]) {
+    await pool.query(
+      `UPDATE users SET pw_hash = $1, pw_salt = $2, role = 'admin', active = TRUE, must_change_pw = FALSE
+        WHERE id = $3`,
+      [hash, salt, rows[0].id]
+    );
+    console.log('[seed] 관리자 계정 갱신:', empNo);
+  } else {
+    await pool.query(
+      `INSERT INTO users (emp_no, name, dept, pw_hash, pw_salt, role, must_change_pw)
+       VALUES ($1, '관리자', '경영지원팀', $2, $3, 'admin', FALSE)`,
+      [empNo, hash, salt]
+    );
+    console.log('[seed] 관리자 계정 생성:', empNo);
+  }
 }
 
 init()
-  .then(seedFirstAdmin)
+  .then(ensureAdmin)
   .then(() => app.listen(PORT, () => console.log('[server] 포트 ' + PORT + ' 에서 실행 중')))
   .catch((e) => { console.error('기동 실패:', e); process.exit(1); });
