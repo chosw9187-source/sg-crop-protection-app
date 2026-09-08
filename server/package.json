@@ -1,0 +1,18 @@
+{
+  "name": "sg-hanteamjang-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SG 한팀장 - 사내 전용 서버 (계정 인증 + 기록 동기화)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}

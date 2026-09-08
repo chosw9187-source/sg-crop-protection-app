@@ -213,6 +213,12 @@ fs.writeFileSync(path.join(docsDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n
 fs.writeFileSync(path.join(docsDir, 'config.json'),
   JSON.stringify({ accessCode: appConfig.accessCode, adminPw: appConfig.adminPw }, null, 2), 'utf-8');
 
+// Railway 서버용 — 로그인을 통과한 사람에게만 전달된다
+const serverPublic = path.join(dir, 'server', 'public');
+if (fs.existsSync(serverPublic)) {
+  fs.writeFileSync(path.join(serverPublic, 'index.html'), html, 'utf-8');
+}
+
 // Named copy for 다우오피스 그룹웨어 자료실 배포
 const DEPLOY_NAME = 'SG_영업사원 작물보호제 학습 도우미.html';
 fs.writeFileSync(path.join(dir, DEPLOY_NAME), html, 'utf-8');

@@ -247,6 +247,39 @@ body{
   font-size:16px;letter-spacing:.06em;color:var(--sg-green-dark);
   background:var(--sg-green-light);padding:2px 9px;border-radius:7px;margin-left:4px;
 }
+.sidebar-user-sub{display:block;font-size:10.5px;font-weight:600;color:var(--text-muted);margin-top:1px;}
+
+/* 관리자 - 계정 관리 */
+.adduser-box{
+  margin-top:14px;padding:14px;border-radius:12px;
+  background:var(--sg-green-light);border:1px solid var(--sg-green);
+}
+.adduser-title{font-size:13px;font-weight:800;color:var(--sg-green-dark);margin-bottom:10px;}
+.adduser-row{display:flex;gap:8px;margin-bottom:8px;}
+.adduser-row .calc-input{flex:1;min-width:0;}
+.adduser-check{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text);margin:4px 0 10px;}
+.userlist{margin-top:16px;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;}
+.userrow{
+  display:flex;align-items:center;gap:10px;padding:11px 12px;
+  border:1px solid var(--border);border-radius:11px;background:var(--card-bg);
+}
+.userrow.off{opacity:.55;}
+.userrow-main{flex:1;min-width:0;}
+.userrow-name{font-size:14px;font-weight:700;color:var(--text);}
+.userrow-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.userrow-tag{
+  font-size:9.5px;font-weight:700;margin-left:6px;padding:2px 6px;border-radius:5px;
+  background:var(--sg-green);color:#fff;vertical-align:middle;
+}
+.userrow-tag.off{background:#c0392b;}
+.userrow-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.userrow-btn{
+  padding:5px 9px;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--text-muted);font-family:inherit;
+  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+.userrow-btn.danger{color:#c0392b;border-color:#e8bdb7;}
+
 .admin-cmd{
   margin:10px 0 0;padding:11px 12px;border-radius:9px;
   background:var(--sg-gray-light);border:1px solid var(--border);

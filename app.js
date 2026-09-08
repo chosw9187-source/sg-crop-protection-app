@@ -22,6 +22,25 @@
     adminPw: D.defaultAdminPw || "3030agro"
   };
 
+  // ---------- 서버 모드 ----------
+  // 사내 서버(Railway)에서 열면 실계정으로 동작하고 기록이 계정에 저장된다.
+  // 아티팩트나 파일로 직접 열면 서버가 없으므로 기존 방식(인증코드+이름표)으로 동작한다.
+  var SERVER = { on: false, me: null };
+
+  function api(method, url, body){
+    return fetch(url, {
+      method: method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: "same-origin"
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(d){
+        if(!r.ok) throw new Error(d.error || ("요청 실패 (" + r.status + ")"));
+        return d;
+      });
+    });
+  }
+
   function lsGet(k, fallback){
     try { var v = localStorage.getItem(k); return v === null ? fallback : v; }
     catch(e){ return fallback; }
@@ -67,13 +86,31 @@
     var raw;
     try { raw = JSON.parse(lsGet(uKey(LS.chat), "[]")); } catch(e){ return []; }
     if(!Array.isArray(raw)) return [];
+    return rehydrateChat(raw);
+  }
+  // 저장된 질문으로 검색결과를 다시 만들어 화면을 복원한다
+  function rehydrateChat(raw){
     return raw.map(function(m){
-      if(m.role === "user") return m;
+      if(m.role === "user") return { role:"user", text:m.text };
       var out = { role:"bot", text:m.text, q:m.q, kind:m.kind };
       if(m.kind === "crop") out.cropOverview = getCropOverview(m.q);
       else if(m.kind === "search") out.results = chatSearch(m.q);
       return out;
     });
+  }
+  function slimMsg(m){
+    if(m.role === "user") return { role:"user", text:m.text };
+    return { role:"bot", text:m.text, q:m.q || "", kind:m.kind || "" };
+  }
+  // 새로 오간 대화만 서버에 보낸다 (로컬 모드면 전체를 localStorage에 저장)
+  function persistChat(newMsgs){
+    if(SERVER.on){
+      if(newMsgs && newMsgs.length){
+        api("POST", "/api/chat", { messages: newMsgs.map(slimMsg) }).catch(function(){});
+      }
+    } else {
+      saveChat();
+    }
   }
 
   function nowStamp(){
@@ -196,7 +233,8 @@
   })();
 
   var state = { tab: "search", view: "list", selected: null, query: "", filter: "전체", formFilter: null, chatMessages: [], productsView: "info", formulationOpen: false, pageSize: 20, page: 1, calcProductId: null, calcProductSearch: "", calcCropName: null, calcVariantKey: null, calcWaterL: "", calcWaterUnit: "ℓ",
-    sidebarOpen: false, adminAuthed: false, journal: [], quiz: null, quizAnswered: null, voiceOn: false, user: "" };
+    sidebarOpen: false, adminAuthed: false, journal: [], quiz: null, quizAnswered: null, voiceOn: false, user: "",
+    adminUsers: null, quizStat: null };
 
   function tokenizeQuery(q){
     return q.split(/[\s,、.!?？!()]+/).map(function(s){ return s.trim(); }).filter(Boolean);
@@ -1050,7 +1088,7 @@
         return c + " " + cropOverview.byCat[c].length + "개(" + cropOverview.byCat[c].slice(0,3).map(function(x){ return x.product.productName; }).join(", ") + ")";
       }).join(" / ");
       addJournalEntry(text, "사용 가능 제품 " + cropOverview.total + "개 — " + journalSummary);
-      saveChat();
+      persistChat(state.chatMessages.slice(-2));
       speak(botText1);
       render();
       var scroller1 = document.getElementById("chatScroll");
@@ -1070,7 +1108,7 @@
     results.weeds.forEach(function(w){ jParts.push("잡초 " + w.name); });
     results.products.forEach(function(p){ jParts.push("제품 " + p.productName); });
     addJournalEntry(text, jParts.length ? jParts.join(" / ") : "검색 결과 없음");
-    saveChat();
+    persistChat(state.chatMessages.slice(-2));
 
     var spoken = botText;
     if(results.targets.length){
@@ -1134,9 +1172,17 @@
 
   // ---------- 업무일지 (JOURNAL) ----------
   function addJournalEntry(question, answer){
-    state.journal.unshift({ id: Date.now() + "_" + Math.floor(Math.random()*1e6), ts: nowStamp(), q: question, a: answer, memo: "" });
+    var entry = { id: Date.now() + "_" + Math.floor(Math.random()*1e6), ts: nowStamp(), q: question, a: answer, memo: "" };
+    state.journal.unshift(entry);
     if(state.journal.length > 500) state.journal.length = 500;
-    saveJournal(state.journal);
+    if(SERVER.on){
+      // 서버가 부여한 실제 id로 바꿔야 이후 메모 수정·삭제가 동작한다
+      api("POST", "/api/journal", { ts: entry.ts, q: entry.q, a: entry.a })
+        .then(function(r){ if(r && r.id) entry.id = r.id; })
+        .catch(function(){});
+    } else {
+      saveJournal(state.journal);
+    }
   }
 
   function journalPlainText(){
@@ -1230,6 +1276,7 @@
   }
 
   function getQuizStat(){
+    if(SERVER.on) return state.quizStat || { correct:0, total:0 };
     try { return JSON.parse(lsGet(uKey(LS.quizStat), '{"correct":0,"total":0}')); }
     catch(e){ return {correct:0, total:0}; }
   }
@@ -1237,7 +1284,12 @@
     var s = getQuizStat();
     s.total = (s.total||0) + 1;
     if(isCorrect) s.correct = (s.correct||0) + 1;
-    lsSet(uKey(LS.quizStat), JSON.stringify(s));
+    if(SERVER.on){
+      state.quizStat = s;
+      api("POST", "/api/quiz", { correct: !!isCorrect }).catch(function(){});
+    } else {
+      lsSet(uKey(LS.quizStat), JSON.stringify(s));
+    }
   }
 
   function renderQuizView(){
@@ -1275,7 +1327,54 @@
   }
 
   // ---------- 관리자 설정 (ADMIN) ----------
+  // 서버 모드에서는 이미 관리자 계정으로 로그인한 상태이므로 계정 관리 화면을 바로 연다.
+  function renderAdminUsers(){
+    var list = state.adminUsers;
+    var html = '<div class="admin-hint">직원 계정 관리</div>' +
+      '<div class="admin-sub">계정을 발급하고, 퇴사자는 <b>사용중지</b>로 즉시 차단합니다. 중지하면 그 사람의 로그인 세션도 바로 끊깁니다.</div>';
+
+    html += '<div class="adduser-box">' +
+      '<div class="adduser-title">＋ 새 계정 발급</div>' +
+      '<div class="adduser-row">' +
+      '<input id="nuEmp" class="calc-input" type="text" placeholder="사번" autocomplete="off"/>' +
+      '<input id="nuName" class="calc-input" type="text" placeholder="이름" autocomplete="off"/>' +
+      '</div>' +
+      '<div class="adduser-row">' +
+      '<input id="nuDept" class="calc-input" type="text" placeholder="부서 (선택)" autocomplete="off"/>' +
+      '<input id="nuPw" class="calc-input" type="text" placeholder="초기 비밀번호 (6자 이상)" autocomplete="off"/>' +
+      '</div>' +
+      '<label class="adduser-check"><input id="nuAdmin" type="checkbox"/> 관리자 권한 부여</label>' +
+      '<div class="admin-error" id="adminError"></div>' +
+      '<button class="modal-btn primary" data-action="admin-add-user">계정 만들기</button>' +
+      '</div>';
+
+    if(!list) html += '<div class="admin-sub">불러오는 중…</div>';
+    else if(!list.length) html += '<div class="admin-sub">등록된 계정이 없습니다.</div>';
+    else {
+      html += '<div class="userlist">';
+      list.forEach(function(u){
+        html += '<div class="userrow' + (u.active ? '' : ' off') + '">' +
+          '<div class="userrow-main">' +
+          '<div class="userrow-name">' + escapeHtml(u.name) +
+          (u.role === 'admin' ? '<span class="userrow-tag">관리자</span>' : '') +
+          (u.active ? '' : '<span class="userrow-tag off">중지됨</span>') + '</div>' +
+          '<div class="userrow-sub">' + escapeHtml(u.emp_no) + (u.dept ? ' · ' + escapeHtml(u.dept) : '') +
+          (u.last_login_at ? ' · 최근 ' + escapeHtml(String(u.last_login_at).slice(0,10)) : ' · 로그인 이력 없음') +
+          '</div></div>' +
+          '<div class="userrow-btns">' +
+          '<button class="userrow-btn" data-action="admin-reset-pw" data-val="' + u.id + '">비번초기화</button>' +
+          '<button class="userrow-btn' + (u.active ? ' danger' : '') + '" data-action="admin-toggle-user" data-val="' + u.id + '">' +
+          (u.active ? '사용중지' : '사용재개') + '</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+    html += '<div class="modal-actions"><button class="modal-btn primary" data-action="close-admin">닫기</button></div>';
+    return html;
+  }
+
   function renderAdminBody(){
+    if(SERVER.on) return renderAdminUsers();
     if(!state.adminAuthed){
       return '<div class="admin-hint">관리자 비밀번호를 입력하세요.</div>' +
         '<input id="adminPwInput" class="calc-input" type="password" placeholder="관리자 비밀번호" autocomplete="off"/>' +
@@ -1294,10 +1393,20 @@
       '</div>';
   }
 
+  function refreshAdminUsers(){
+    return api("GET", "/api/admin/users").then(function(d){
+      state.adminUsers = d.users || [];
+      var b = document.getElementById("adminBody");
+      if(b) b.innerHTML = renderAdminBody();
+    });
+  }
+
   function openAdmin(){
     state.adminAuthed = false;
+    if(SERVER.on) state.adminUsers = null;
     document.getElementById("adminBody").innerHTML = renderAdminBody();
     document.getElementById("adminModal").classList.remove("hidden");
+    if(SERVER.on) refreshAdminUsers().catch(function(e){ toast(e.message); });
   }
   function closeAdmin(){
     document.getElementById("adminModal").classList.add("hidden");
@@ -1323,13 +1432,18 @@
     document.getElementById("sidebarNav").innerHTML = navHtml;
 
     var uName = state.user || "";
+    var isAdmin = SERVER.on && SERVER.me && SERVER.me.role === "admin";
     document.getElementById("sidebarFooter").innerHTML =
       (uName
         ? '<div class="sidebar-user"><span class="user-avatar">' + escapeHtml(uName.slice(0,1)) + '</span>' +
-          '<span class="sidebar-user-name">' + escapeHtml(uName) + '</span>' +
-          '<button class="sidebar-user-switch" data-action="switch-user">변경</button></div>'
+          '<span class="sidebar-user-name">' + escapeHtml(uName) +
+          (SERVER.on ? '<span class="sidebar-user-sub">' + escapeHtml(SERVER.me.empNo) + (isAdmin ? ' · 관리자' : '') + '</span>' : '') +
+          '</span>' +
+          (SERVER.on ? '' : '<button class="sidebar-user-switch" data-action="switch-user">변경</button>') +
+          '</div>'
         : '') +
-      '<button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>' +
+      ((!SERVER.on || isAdmin)
+        ? '<button class="sidebar-admin-btn" data-action="open-admin">⚙️ 관리자 설정</button>' : '') +
       '<button class="sidebar-logout-btn" data-action="logout">🔒 로그아웃</button>';
 
     var cur = NAV_ITEMS.find(function(t){ return t.id === state.tab; });
@@ -1416,9 +1530,40 @@
         if(errEl) errEl.textContent = "비밀번호가 올바르지 않습니다.";
       }
     }
+    else if(action === "admin-add-user"){
+      var errBox = document.getElementById("adminError");
+      api("POST", "/api/admin/users", {
+        empNo: document.getElementById("nuEmp").value,
+        name: document.getElementById("nuName").value,
+        dept: document.getElementById("nuDept").value,
+        password: document.getElementById("nuPw").value,
+        role: document.getElementById("nuAdmin").checked ? "admin" : "user"
+      }).then(function(){
+        toast("✅ 계정을 만들었습니다");
+        return refreshAdminUsers();
+      }).catch(function(e){ if(errBox) errBox.textContent = e.message; });
+    }
+    else if(action === "admin-toggle-user"){
+      var target = (state.adminUsers || []).find(function(u){ return String(u.id) === String(val); });
+      if(!target) return;
+      var turnOff = target.active;
+      if(turnOff && !window.confirm('"' + target.name + '" 계정을 사용중지할까요?\n로그인 세션이 즉시 끊기고 접속할 수 없게 됩니다.')) return;
+      api("PATCH", "/api/admin/users/" + val, { active: !turnOff })
+        .then(function(){ toast(turnOff ? "사용중지했습니다" : "다시 사용할 수 있습니다"); return refreshAdminUsers(); })
+        .catch(function(e){ toast(e.message); });
+    }
+    else if(action === "admin-reset-pw"){
+      var pw = window.prompt("새 임시 비밀번호 (6자 이상)\n본인이 첫 로그인 때 변경하게 됩니다.");
+      if(!pw) return;
+      api("PATCH", "/api/admin/users/" + val, { resetPassword: pw })
+        .then(function(){ toast("✅ 비밀번호를 초기화했습니다"); return refreshAdminUsers(); })
+        .catch(function(e){ toast(e.message); });
+    }
     else if(action === "chat-clear"){
       if(window.confirm("이 사용자의 대화내용을 지울까요? 업무일지는 그대로 남습니다.")){
-        state.chatMessages = []; saveChat(); render();
+        state.chatMessages = [];
+        if(SERVER.on) api("DELETE", "/api/chat").catch(function(){}); else saveChat();
+        render();
       }
     }
     else if(action === "voice-input") startVoiceInput();
@@ -1437,13 +1582,16 @@
     }
     else if(action === "journal-clear"){
       if(window.confirm("업무일지를 전부 삭제할까요? 되돌릴 수 없습니다.")){
-        state.journal = []; saveJournal(state.journal); render();
+        state.journal = [];
+        if(SERVER.on) api("DELETE", "/api/journal").catch(function(){}); else saveJournal(state.journal);
+        render();
         toast("업무일지를 비웠습니다");
       }
     }
     else if(action === "journal-del"){
       state.journal = state.journal.filter(function(e){ return e.id !== val; });
-      saveJournal(state.journal); render();
+      if(SERVER.on) api("DELETE", "/api/journal/" + encodeURIComponent(val)).catch(function(){}); else saveJournal(state.journal);
+      render();
     }
     else if(action === "quiz-new"){
       state.quiz = buildQuiz(); state.quizAnswered = null; render();
@@ -1526,7 +1674,13 @@
     } else if(ev.target.classList && ev.target.classList.contains("journal-memo")){
       var jid = ev.target.getAttribute("data-jid");
       var entry = state.journal.find(function(e){ return e.id === jid; });
-      if(entry){ entry.memo = ev.target.value; saveJournal(state.journal); }
+      if(entry){
+        entry.memo = ev.target.value;
+        if(SERVER.on){
+          clearTimeout(entry._t);
+          entry._t = setTimeout(function(){ api("PATCH", "/api/journal/" + encodeURIComponent(entry.id), { memo: entry.memo }).catch(function(){}); }, 600);
+        } else saveJournal(state.journal);
+      }
     }
   });
 
@@ -1610,7 +1764,12 @@
       setCurrentUser("");
       showUserGate();
     }
-    else if(action === "logout"){ lockApp("로그아웃되었습니다."); }
+    else if(action === "logout"){
+      if(SERVER.on){
+        api("POST", "/api/logout").then(function(){ location.href = "/login"; },
+                                        function(){ location.href = "/login"; });
+      } else lockApp("로그아웃되었습니다.");
+    }
   });
 
   document.addEventListener("submit", function(ev){
@@ -1665,8 +1824,56 @@
     showCodeGate("");
   }
 
-  // 공통 설정을 서버에서 읽는다. 실패하면(파일 직접 열기·아티팩트) 빌드에 박힌 값 사용.
+  // ---------- 서버 모드 진입 ----------
+  // 사내 서버라면 이미 로그인을 통과한 상태다. 인증코드·이름표 화면을 건너뛴다.
+  function enterServerMode(me){
+    SERVER.on = true;
+    SERVER.me = me;
+    state.user = me.name;
+    document.getElementById("authGate").classList.add("hidden");
+    document.getElementById("appRoot").classList.remove("hidden");
+    render();
+    api("GET", "/api/data")
+      .then(function(d){
+        state.journal = (d.journal || []).map(function(e){ return { id:e.id, ts:e.ts, q:e.q, a:e.a, memo:e.memo || "" }; });
+        state.chatMessages = rehydrateChat(d.chat || []);
+        state.quizStat = d.quiz || { correct:0, total:0 };
+        render();
+      })
+      .catch(function(){ toast("기록을 불러오지 못했어요"); });
+    if(me.mustChangePw) setTimeout(promptPasswordChange, 400);
+  }
+
+  function promptPasswordChange(){
+    var cur = window.prompt("보안을 위해 비밀번호를 변경해주세요.\n\n현재(임시) 비밀번호:");
+    if(cur === null) return;
+    var next = window.prompt("새 비밀번호 (6자 이상):");
+    if(next === null) return;
+    api("POST", "/api/password", { current: cur, next: next })
+      .then(function(){ SERVER.me.mustChangePw = false; toast("✅ 비밀번호가 변경되었습니다"); })
+      .catch(function(e){ toast(e.message); setTimeout(promptPasswordChange, 600); });
+  }
+
+  // 서버가 있으면 실계정 모드, 없으면 기존 방식(인증코드+이름표)으로 동작한다.
   function boot(){
+    var done = false;
+    function fallback(){ if(done) return; done = true; loadLocalConfigThenAuth(); }
+
+    setTimeout(fallback, 5000);
+    try {
+      fetch("/api/me", { credentials: "same-origin", cache: "no-store" })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(me){
+          if(done) return;
+          if(me && me.name){ done = true; enterServerMode(me); }
+          else fallback();
+        })
+        .catch(fallback);
+    } catch(e){ fallback(); }
+  }
+
+  // 공통 설정을 config.json에서 읽는다. 실패하면 빌드에 박힌 값 사용.
+  function loadLocalConfigThenAuth(){
     var done = false;
     function go(){ if(!done){ done = true; initAuth(); } }
     setTimeout(go, 4000);                      // 네트워크가 느려도 앱은 뜨게
