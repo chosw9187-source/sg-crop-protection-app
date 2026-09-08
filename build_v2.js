@@ -202,16 +202,9 @@ ${appJs}
 
 fs.writeFileSync(path.join(dir, 'artifact.html'), html, 'utf-8');
 
-// GitHub Pages output (docs/ folder — enable Pages with "main / docs")
-const docsDir = path.join(dir, 'docs');
-if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
-fs.writeFileSync(path.join(docsDir, 'index.html'), html, 'utf-8');
-fs.writeFileSync(path.join(docsDir, '.nojekyll'), '', 'utf-8');
-// 테스트 공개 단계에서는 검색엔진 색인을 막는다 (비공개 전환 시 함께 정리)
-fs.writeFileSync(path.join(docsDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n', 'utf-8');
-// 전 직원 공통 설정 — 앱이 시작할 때 이 파일을 읽어 인증코드를 확인한다
-fs.writeFileSync(path.join(docsDir, 'config.json'),
-  JSON.stringify({ accessCode: appConfig.accessCode, adminPw: appConfig.adminPw }, null, 2), 'utf-8');
+// GitHub Pages 공개 배포는 중단됨 — 사내 서버(Railway)로 이전했다.
+// 로그인 없이 열리는 공개 주소를 남기지 않기 위해 docs/ 를 더 이상 만들지 않는다.
+// 되살리려면 git 이력에서 이 블록을 복원하면 된다.
 
 // Railway 서버용 — 로그인을 통과한 사람에게만 전달된다
 const serverPublic = path.join(dir, 'server', 'public');
@@ -225,5 +218,5 @@ fs.writeFileSync(path.join(dir, DEPLOY_NAME), html, 'utf-8');
 
 const sizeKB = (fs.statSync(path.join(dir, 'artifact.html')).size / 1024).toFixed(1);
 console.log('Built artifact.html, size:', sizeKB, 'KB');
-console.log('Also wrote: docs/index.html (GitHub Pages) +', DEPLOY_NAME);
+console.log('Also wrote: server/public/index.html +', DEPLOY_NAME);
 console.log('Products:', allProducts.length, '| Weeds:', weeds.length, '| Pests:', pests.length, '| Photos:', Object.keys(photos).length, '| MixByCrop:', mixing.byCrop.length);
